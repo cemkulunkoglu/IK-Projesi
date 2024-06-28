@@ -1,0 +1,59 @@
+<div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+  <div class="card-body px-10">
+    <dx-data-grid id="gridContainer" [dataSource]="dataSource" [columnAutoWidth]="true" [showRowLines]="false"
+      [showColumnLines]="false" [showBorders]="true" [rowAlternationEnabled]="true">
+      <dxo-toolbar>
+        <dxi-item location="before" locateInMenu="auto">
+          <button (click)="showOvertimeModal(userOvertimeCreate)" class="btn btn-sm main-btn align-self-center"
+            *ngIf="hasPermission('employee-overtime-demand-create')">
+            Mesai Ekle
+          </button>
+        </dxi-item>
+        <dxi-item name="searchPanel"></dxi-item>
+      </dxo-toolbar>
+      <dxo-paging [pageSize]="25"></dxo-paging>
+      <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[25, 50, 100]"></dxo-pager>
+      <dxo-filter-panel [visible]="false"></dxo-filter-panel>
+      <dxo-filter-row [visible]="false"></dxo-filter-row>
+      <dxo-header-filter [visible]="false"></dxo-header-filter>
+      <dxo-search-panel [visible]="true" [highlightCaseSensitive]="true"></dxo-search-panel>
+      <dxo-group-panel [visible]="false"></dxo-group-panel>
+
+      <dxi-column dataField="timeHour" dataType="string" caption="Saat"></dxi-column>
+      <dxi-column dataField="timeMinute" dataType="string" caption="Dakika"></dxi-column>
+      <dxi-column dataField="description" dataType="string" caption="Açıklama"></dxi-column>
+      <dxi-column dataField="startDate" dataType="date" caption="Başlangıç Tarihi"
+        format='dd/MM/yyyy HH:mm'></dxi-column>
+      <dxi-column type="buttons" [width]="110" [fixed]="true" caption="İşlemler"
+        cellTemplate="cellBtnTemplate"></dxi-column>
+
+      <div *dxTemplate="let item of 'cellBtnTemplate'">
+        <button (click)="editOvertimeClick(item, userOvertimeEdit)"
+          *ngIf="hasPermission('employee-overtime-demand-create')"
+          class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1" title="Düzenle">
+          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen055.svg'"></span>
+        </button>
+        <button (click)="deleteOvertimeClick(item)" *ngIf="hasPermission('employee-overtime-demand-create')"
+          class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" title="Sil">
+          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/arrows/arr011.svg'"></span>
+        </button>
+      </div>
+    </dx-data-grid>
+  </div>
+</div>
+
+<ng-template #userOvertimeCreate let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Mesai Ekleme</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+  <app-overtime-create [userId]="userId" (userOvertimeCreate)="reloadDataSource($event)"></app-overtime-create>
+</ng-template>
+
+<ng-template #userOvertimeEdit let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Mesai Bilgisi Düzenleme</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+  <app-overtime-update [overtimeId]="overtimeId" (userOvertimeEdit)="reloadDataSource($event)"></app-overtime-update>
+</ng-template>

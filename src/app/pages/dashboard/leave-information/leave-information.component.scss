@@ -1,0 +1,78 @@
+.leave-bar {
+  background-color: #eee;
+  height: 5px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.leave-bar-full {
+  background-color: hsl(2, 94%, 50%);
+  height: 100%;
+  position: absolute;
+}
+.m-t-12 {
+  margin-top: 12px!important;
+}
+.align-items-center {
+  -webkit-box-align: center!important;
+  -ms-flex-align: center!important;
+  align-items: center!important;
+}
+
+.justify-content-between {
+  -webkit-box-pack: justify!important;
+  -ms-flex-pack: justify!important;
+  justify-content: space-between!important;
+}
+.sm-circle-warning {
+  background-color: #f9a623;
+}
+.sm-circle-dark-20, .sm-circle-gray, .sm-circle-warning, .sm-circle-alert {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.dark-type-color-base {
+  color: #162a4ce6!important;
+}
+.m-l-8 {
+  margin-left: 8px!important;
+}
+.m-r-4 {
+  margin-right: 4px!important;
+}
+.dark-type-color-base {
+  color: #162a4ce6!important;
+}
+.text-medium {
+  font-weight: 500!important;
+}
+.d-flex {
+  display: -webkit-box!important;
+  display: -ms-flexbox!important;
+  display: flex!important;
+}
+.sm-circle-alert {
+  background-color: #e62729;
+}
+.sm-circle-dark-20, .sm-circle-gray, .sm-circle-warning, .sm-circle-alert {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.m-l-4 {
+  margin-left: 4px!important;
+}
+.dark-type-color-base {
+  color: #162a4ce6!important;
+}
+.dark-type-color-base {
+  color: #162a4ce6!important;
+}
+#home-view .widget#MyLeaves .widget-content .next-accrual-date {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}

@@ -1,0 +1,13 @@
+.leave-bar {
+  background-color: #eee;
+  height: 5px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.leave-bar-full {
+  background-color: hsl(2, 94%, 50%);
+  height: 100%;
+  position: absolute;
+}

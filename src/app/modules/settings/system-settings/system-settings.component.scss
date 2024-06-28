@@ -1,0 +1,13 @@
+::ng-deep .text-active-primary.active {
+    color: #004585 !important;
+}
+
+::ng-deep .nav-line-tabs .nav-item .nav-link.active,
+::ng-deep .nav-line-tabs .nav-item .nav-link:hover:not(.disabled) {
+    border-bottom: 2px solid #004585 !important;
+}
+
+::ng-deep span.description {
+    font-size: smaller;
+    color: gray;
+}

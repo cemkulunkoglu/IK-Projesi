@@ -1,0 +1,62 @@
+<div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+    <div class="card-header cursor-pointer">
+      <div class="w-100 card-title m-0">
+        <h3 class="w-100 fw-bolder m-0">İşten Ayrılma Nedenleri Listesi</h3>
+        <div class="w-100 d-flex justify-content-end">
+          <button class="btn btn-sm main-btn" (click)="openLeavingJobReasonCategoryAddModal()">
+            İşten Ayrılma Nedeni Ekle
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-9">
+      <dx-data-grid id="gridContainer" [dataSource]="dataSource" [columnAutoWidth]="true" [showRowLines]="true"
+        [showColumnLines]="true" [showBorders]="true">
+  
+        <dxo-paging [pageSize]="25"></dxo-paging>
+        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[25, 50, 100]"></dxo-pager>
+        <dxo-filter-row [visible]="true"></dxo-filter-row>
+        <dxo-header-filter [visible]="true"></dxo-header-filter>
+        <dxo-search-panel [visible]="true" [highlightCaseSensitive]="true"></dxo-search-panel>
+        <dxo-group-panel [visible]="true"></dxo-group-panel>
+  
+        <dxi-column dataField="name" dataType="string" caption="Ayrılma Nedeni Kategorisi"></dxi-column>
+        <dxi-column type="buttons" [width]="110" [fixed]="true" caption="İşlemler" cellTemplate="cellBtnTemplate"></dxi-column>
+  
+        <div *dxTemplate="let data of 'cellBtnTemplate'">
+          <a class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1" title="Düzenle"
+            (click)="openLeavingJobReasonCategoryEditModal(data)">
+            <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen055.svg'"></span>
+          </a>
+          <a title="Ayrılma Nedeni Kategorisini Sil" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm me-2"
+            (click)="deleteLeavingJobReasonCategory(data)">
+            <span class="svg-icon svg-icon-5" [inlineSVG]="'./assets/media/icons/duotune/general/gen027.svg'"></span>
+          </a>
+        </div>
+      </dx-data-grid>
+    </div>
+  </div>
+  
+  <ng-template #leavingJobReasonCategoryModal let-modal>
+    <form [formGroup]="leavingJobReasonCategoryForm" (ngSubmit)="submitForm()">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ isEditMode ? 'Ayrılma Nedeni Kategorisini Düzenle' : 'Yeni Ayrılma Nedeni Kategorisi Ekle' }}</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Ayrılma Nedeni Kategorisi</mat-label>
+              <input matInput formControlName="name" required>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-light" type="button" (click)="closeModal()">Kapat</button>
+        <button class="btn btn-sm btn-primary" type="submit" [disabled]="!leavingJobReasonCategoryForm.valid">{{ isEditMode ? 'Güncelle' : 'Kaydet' }}</button>
+      </div>
+    </form>
+  </ng-template>
+  

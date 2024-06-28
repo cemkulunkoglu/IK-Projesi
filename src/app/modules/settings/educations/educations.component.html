@@ -1,0 +1,128 @@
+<div *ngIf="hasListPermission">
+    <div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+        <div class="card-header">
+            <div class="w-100 card-title m-0">
+                <h3 class="w-100 fw-bolder m-0">Eğitimler Listesi</h3>
+                <div class="w-100 d-flex justify-content-end">
+                    <button class="btn btn-sm main-btn" (click)="openEducationAddModal()"
+                        [disabled]="!hasCreatePermission">
+                        Eğitim Ekle
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-9">
+            <dx-data-grid id="gridContainer" [dataSource]="dataSource" [columnAutoWidth]="true" [showRowLines]="true"
+                [showColumnLines]="true" [showBorders]="true">
+                ​
+                <dxo-paging [pageSize]="25"></dxo-paging>
+                <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[25, 50, 100]"></dxo-pager>
+                <dxo-filter-row [visible]="true"></dxo-filter-row>
+                <dxo-header-filter [visible]="true"></dxo-header-filter>
+                <dxo-search-panel [visible]="true" [highlightCaseSensitive]="true"></dxo-search-panel>
+                <dxo-group-panel [visible]="true"></dxo-group-panel>
+
+                <dxi-column dataField="name" dataType="string" caption="Eğitim Adı"></dxi-column>
+                <dxi-column dataField="educator" dataType="string" caption="Eğitmen"></dxi-column>
+                <dxi-column dataField="description" dataType="string" caption="Açıklama"></dxi-column>
+                <dxi-column dataField="startDate" dataType="datetime" caption="Başlangıç Tarihi"></dxi-column>
+                <dxi-column dataField="endDate" dataType="datetime" caption="Bitiş Tarihi"></dxi-column>
+                <dxi-column dataField="validity" dataType="datetime" caption="Geçerlilik Tarihi"></dxi-column>
+                <dxi-column dataField="educationProvider" dataType="string" caption="Eğitimi Veren Şirket"></dxi-column>
+                <dxi-column dataField="location" dataType="string" caption="Verildiği Yer"></dxi-column>
+                <dxi-column type="buttons" [width]="110" [fixed]="true" caption="İşlemler"
+                    cellTemplate="cellBtnTemplate"></dxi-column>
+
+                <div *dxTemplate="let data of 'cellBtnTemplate'">
+                    <button class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1" title="Düzenle"
+                        (click)="openEducationEditModal(data)" [disabled]="!hasUpdatePermission">
+                        <span class="svg-icon svg-icon-2"
+                            [inlineSVG]="'./assets/media/icons/duotune/general/gen055.svg'"></span>
+                    </button>
+                    <button title="Eğitimi Sil" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm me-2"
+                        (click)="deleteEducation(data)" [disabled]="!hasDeletePermission">
+                        <span class="svg-icon svg-icon-5"
+                            [inlineSVG]="'./assets/media/icons/duotune/general/gen027.svg'"></span>
+                    </button>
+                </div>
+            </dx-data-grid>
+        </div>
+    </div>
+</div>
+
+<ng-template #educationModal let-modal>
+    <form [formGroup]="educationForm" (ngSubmit)="submitForm()">
+        <div class="modal-header">
+            <h5 class="modal-title">{{ isEditMode ? 'Eğitimi Düzenle' : 'Yeni Eğitim Ekle' }}</h5>
+            <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Eğitim Adı</mat-label>
+                        <input matInput formControlName="name" required>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-6">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Eğitmen</mat-label>
+                        <input matInput formControlName="educator" required>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-4">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Başlangıç Tarihi ve Saati</mat-label>
+                        <input formControlName="startDate" matInput [ngxMatDatetimePicker]="startDatePicker"
+                            [min]="minDate" (focus)="startDatePicker.open()" autocomplete="off" required>
+                        <mat-datepicker-toggle matSuffix></mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker #startDatePicker [showSpinners]="true" [stepMinute]="1"
+                            [defaultTime]="defaultStartTime"></ngx-mat-datetime-picker>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-4">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Bitiş Tarihi ve Saati</mat-label>
+                        <input formControlName="endDate" matInput [ngxMatDatetimePicker]="endDatePicker" [min]="minDate"
+                            (focus)="endDatePicker.open()" autocomplete="off" required>
+                        <mat-datepicker-toggle matSuffix></mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker #endDatePicker [showSpinners]="true" [stepMinute]="1"
+                            [defaultTime]="defaultStartTime"></ngx-mat-datetime-picker>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-4">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Geçerlilik Tarihi</mat-label>
+                        <input formControlName="validity" matInput [ngxMatDatetimePicker]="validityDatePicker"
+                            [min]="minDate" (focus)="validityDatePicker.open()" autocomplete="off" required>
+                        <mat-datepicker-toggle matSuffix></mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker #validityDatePicker [showSpinners]="true" [stepMinute]="1"
+                            [defaultTime]="defaultStartTime"></ngx-mat-datetime-picker>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-6">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Eğitimi Veren Şirket</mat-label>
+                        <input matInput formControlName="educationProvider" required>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-6">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Verildiği Yer</mat-label>
+                        <input matInput formControlName="location" required>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-12">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Açıklama</mat-label>
+                        <textarea matInput formControlName="description" rows="4" required></textarea>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-sm btn-light" type="button" (click)="closeModal()">Kapat</button>
+            <button class="btn btn-sm btn-primary" type="submit">{{ isEditMode ? 'Güncelle' : 'Kaydet' }}</button>
+        </div>
+    </form>
+</ng-template>

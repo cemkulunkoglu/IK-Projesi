@@ -1,0 +1,84 @@
+:host {
+  height: 100%;
+  margin: 0;
+
+  .flex-root {
+    height: 100%;
+  }
+}
+
+.page-loaded {
+  app-layout {
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+  }
+}
+
+::ng-deep .cdk-overlay-container {
+  z-index: 1056 !important;
+}
+
+::ng-deep .example-full-width {
+  width: 100%;
+}
+
+::ng-deep .dx-header-row {
+  color: #ffffff !important;
+  background-color: #004585;
+  font-weight: normal !important;
+}
+
+::ng-deep .dx-item-content {
+  margin-bottom: .75rem !important;
+}
+
+::ng-deep .dx-item-content .dx-datagrid-export-button {
+  margin-bottom: .75rem !important;
+}
+
+::ng-deep .dx-item-content .dx-datagrid-search-panel {
+  margin-bottom: 1.50rem !important;
+}
+
+::ng-deep .dx-datagrid-content .dx-datagrid-table {
+  border-collapse: separate;
+}
+
+::ng-deep .dx-datagrid-content .dx-datagrid-table .dx-row>td,
+.dx-datagrid-content .dx-datagrid-table .dx-row>tr>td {
+  vertical-align: middle;
+}
+
+::ng-deep .dx-toolbar .dx-toolbar-items-container {
+  height: 48px;
+}
+
+::ng-deep .main-btn,
+::ng-deep .main-btn:focus {
+  background-color: #004585;
+  color: #ffffff;
+  border: 1px solid #004585 !important;
+}
+
+::ng-deep .main-btn:hover {
+  background-color: #ffffff;
+  color: #004585;
+  border: 1px solid #004585 !important;
+}
+
+::ng-deep .light-main-btn,
+::ng-deep .light-main-btn:focus {
+  background-color: #ffffff;
+  color: #004585;
+  border: 1px solid #004585 !important;
+}
+
+::ng-deep .light-main-btn:hover {
+  background-color: #f9f9f9;
+  color: #004585;
+  border: 1px solid #004585 !important;
+}
+
+::ng-deep .dx-widget {
+  font-family: Inter, Helvetica, "sans-serif" !important;
+}

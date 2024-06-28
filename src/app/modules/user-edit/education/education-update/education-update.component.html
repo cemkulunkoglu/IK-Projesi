@@ -1,0 +1,86 @@
+<form novalidate="novalidate" [formGroup]="educationUpdateForm" class="form col-lg-12 mx-auto">
+  <input type="text" matInput name="userId" formControlName="userId" hidden>
+  <div class="card-body p-9">
+    <div class="row">
+      <div class="col-lg-4">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Eğitim Seç</mat-label>
+          <mat-select formControlName="educationId" required>
+            <mat-option *ngFor="let education of educations" [value]="education.id">
+              {{ education.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="educationUpdateForm.controls['educationId'].hasError('required')">
+            Eğitim seçimi <strong>zorunludur</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-4">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Eğitim Durumu</mat-label>
+          <mat-select formControlName="userEducationStatus" required>
+            <mat-option *ngFor="let status of userEducationStatusTypeSources" [value]="status">
+              {{ UserEducationStatusLabelMapping[status] }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="educationUpdateForm.controls['userEducationStatus'].hasError('required')">
+            Eğitim durumu <strong>zorunludur</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-4">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Tamamlama Tarihi</mat-label>
+          <input formControlName="completionDate" matInput [ngxMatDatetimePicker]="pickerStart" [min]="minDate"
+            (focus)="pickerStart.open()" autocomplete="off" required>
+          <mat-datepicker-toggle matSuffix></mat-datepicker-toggle>
+          <ngx-mat-datetime-picker #pickerStart [showSpinners]="true" [stepMinute]="1"
+            [defaultTime]="defaultTime"></ngx-mat-datetime-picker>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-12">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Açıklama</mat-label>
+          <textarea matInput name="description" formControlName="description"></textarea>
+          <mat-error *ngIf="educationUpdateForm.controls['description'].hasError('required')">
+            Açıklama <strong>zorunludur</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-12">
+        <div class="form-group d-flex align-items-center">
+          <label class="me-3">Değerlendirme Puanı:</label>
+          <div class="d-flex">
+            <div *ngFor="let point of [1,2,3,4,5,6,7,8,9,10]"
+              class="form-check form-check-custom form-check-warning form-check-solid me-7">
+              <input class="form-check-input" type="radio" [value]="point" formControlName="rating"
+                id="rating{{point}}" />
+              <label class="form-check-label d-block" for="rating{{point}}">
+                <i class="ki-duotone ki-star fs-1"></i>
+                <div>{{ point }}</div>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="mt-2">
+          Verilen Değerlendirme Puanı: {{ selectedRating }}
+        </div>
+        <mat-error *ngIf="educationUpdateForm.controls['rating'].hasError('required')">
+          Puanı <strong>zorunludur</strong>
+        </mat-error>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer d-flex justify-content-end py-6 px-9">
+    <button type="button" class="btn btn-sm btn-success"
+      [disabled]="educationUpdateForm.invalid || (isLoading$ | async)" (click)="saveEducation()">
+      <ng-container *ngIf="!(isLoading$ | async)">Kaydet</ng-container>
+      <ng-container *ngIf="isLoading$ | async">
+        <span class="indicator-progress" [style.display]="'block'">
+          Lütfen bekleyiniz...
+          <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+        </span>
+      </ng-container>
+    </button>
+  </div>
+</form>

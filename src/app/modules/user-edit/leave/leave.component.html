@@ -1,0 +1,149 @@
+<div *ngIf="hasPermission('user-leave-list'); else noPermission">
+  <div class="card mb-3">
+    <div class="card-body px-10 py-5">
+      <div class="mb-5">
+        <div class="next-accrual-date">
+          Kullanılabilir İzin Bakiyesi / Yıllık İzin
+        </div>
+        <div style="font-size: 28px;
+            line-height: 36px;color: #278c3d!important;">{{annualLeave}} Gün</div>
+        <div class="leave-bar">
+          <div class="leave-bar-full" [style.width]="percentageOfBar + '%'"></div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center m-t-12">
+          <div class="d-flex align-items-center">
+            <div class="sm-circle-warning m-l-4"></div>
+            <div class="m-l-8 m-r-4 dark-type-color-base">İleri Tarihli :</div>
+            <span class="dark-type-color-base text-medium">{{futureLeave}}</span>
+          </div>
+          <div class="d-flex align-items-center">
+            <div class="sm-circle-alert m-l-4"></div>
+            <div class="m-l-8 m-r-4 dark-type-color-base">Kullanılan :</div>
+            <span class="dark-type-color-base text-medium">{{balanceLeave}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+    <div class="card-body px-10">
+      <dx-data-grid id="gridContainer" [dataSource]="dataSource" [columnAutoWidth]="true" [showRowLines]="false"
+        [showColumnLines]="false" [showBorders]="true" [rowAlternationEnabled]="true" (onRowClick)="onRowClick($event)">
+        <dxo-toolbar>
+          <dxi-item location="before" locateInMenu="auto">
+            <div class="mt-3">
+              <button (click)="showLeaveModal(userLeaveCreate)" class="btn btn-sm main-btn align-self-center"
+                *ngIf="hasPermission('create-user-leave')">
+                İzin Ekle
+              </button>
+            </div>
+          </dxi-item>
+          <dxi-item>
+            <mat-form-field appearance="fill">
+              <mat-label>İzin Türü :</mat-label>
+              <mat-select [(value)]="selectedLeaveType" placeholder="Tümü"
+                (selectionChange)="onLeaveTypeChange($event)">
+                <mat-option>Seçiniz</mat-option>
+                <mat-option *ngFor="let leaveTypes of leaveTypesEnumValues" [value]="leaveTypes.value">
+                  {{ leaveTypes.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </dxi-item>
+          <dxi-item>
+            <mat-form-field appearance="fill">
+              <mat-label>Statü:</mat-label>
+              <mat-select [(value)]="selectedStatus" placeholder="Tümü" (selectionChange)="onStatusChange($event)">
+                <mat-option>Seçiniz</mat-option>
+                <mat-option *ngFor="let status of statusEnumValues" [value]="status.value">
+                  {{ status.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </dxi-item>
+          <dxi-item>
+            <mat-form-field appearance="fill">
+              <mat-label>Yıl Seçiniz:</mat-label>
+              <mat-select [(value)]="selectedYear" placeholder="Tümü" (selectionChange)="onYearChange($event)">
+                <mat-option>Seçiniz</mat-option>
+                <mat-option *ngFor="let year of yearValue" [value]="year">
+                  {{ year }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </dxi-item>
+          <dxi-item name="searchPanel"></dxi-item>
+        </dxo-toolbar>
+        <dxo-paging [pageSize]="25"></dxo-paging>
+        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[25, 50, 100]"></dxo-pager>
+        <dxo-filter-panel [visible]="false"></dxo-filter-panel>
+        <dxo-filter-row [visible]="false"></dxo-filter-row>
+        <dxo-header-filter [visible]="false"></dxo-header-filter>
+        <dxo-search-panel [visible]="true" [highlightCaseSensitive]="true"></dxo-search-panel>
+        <dxo-group-panel [visible]="false"></dxo-group-panel>
+
+        <dxi-column dataField="startDate" dataType="date" caption="Başlangıç" format='dd/MM/yyyy HH:mm'></dxi-column>
+        <dxi-column dataField="endDate" dataType="date" caption="Bitiş" format='dd/MM/yyyy HH:mm'></dxi-column>
+        <dxi-column dataField="leavePeriod" dataType="string" caption="Süre"></dxi-column>
+        <dxi-column dataField="leaveTypeId" dataType="string" caption="İzin Türü"
+          cellTemplate="leaveTypeTemplate"></dxi-column>
+        <dxi-column dataField="createdDate" dataType="date" caption="Oluşturulma Tarih"
+          format='dd/MM/yyyy HH:mm'></dxi-column>
+        <dxi-column dataField="status" dataType="string" caption="Durum" cellTemplate="statusTypeTemplate"></dxi-column>
+        <dxi-column type="buttons" [width]="110" [fixed]="true" caption="İşlemler"
+          cellTemplate="cellBtnTemplateLeave"></dxi-column>
+        <dxo-master-detail [enabled]="detailRow !== null" template="detail"></dxo-master-detail>
+        <div *dxTemplate="let detail of 'detail'">
+          <div class="master-detail-caption">
+            <strong>Açıklama : </strong> {{ clickedRowDescription }}
+          </div>
+        </div>
+
+        <div *dxTemplate="let item of 'cellBtnTemplateLeave'">
+          <button (click)="editLeaveClick(item, userLeaveEdit)"
+            class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1" title="Düzenle"
+            *ngIf="hasPermission('update-user-leave')">
+            <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen055.svg'"></span>
+          </button>
+          <button (click)="deleteLeaveClick(item)" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm"
+            title="Sil" *ngIf="hasPermission('delete-user-leave')">
+            <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/arrows/arr011.svg'"></span>
+          </button>
+        </div>
+        <div *dxTemplate="let data of 'statusTypeTemplate'">
+          <span [ngClass]="getStatusBadgeClass(data.value)">
+            {{ StatusTypeEnumLabelMapping[data.value] }}
+          </span>
+        </div>
+
+        <div *dxTemplate="let data of 'leaveTypeTemplate'">
+          <span>{{LeaveTypeEnumLabelMapping[data.value]}}</span>
+        </div>
+      </dx-data-grid>
+    </div>
+  </div>
+</div>
+
+<ng-template #userLeaveCreate let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">İzin Ekleme</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+  <app-leaves-create [userId]="userId" (userLeaveCreate)="reloadDataSource($event)"></app-leaves-create>
+</ng-template>
+
+<ng-template #userLeaveEdit let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">İzin Düzenleme</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+  <app-leaves-update [leaveId]="leaveId" (userLeaveEdit)="reloadDataSource($event)"></app-leaves-update>
+</ng-template>
+
+<ng-template #noPermission>
+  <div class="card">
+    <div class="card-body">
+      <p>Burayı görmek veya işlem yapmak için yetkiniz bulunmamaktadır.</p>
+    </div>
+  </div>
+</ng-template>

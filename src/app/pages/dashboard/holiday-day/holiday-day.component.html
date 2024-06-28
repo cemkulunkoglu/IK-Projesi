@@ -1,0 +1,30 @@
+<div class="card h-100">
+  <div class="card-header border-0" style="justify-content: space-between; display: flex; align-items: center;">
+    <div style="order: 1;"></div>
+    <div style="order: 2;">
+      <h3>Resmi Tatiller</h3>
+    </div>
+    <div style="order: 3;">
+    </div>
+  </div>
+  <div class="card-body py-2 px-4">
+    <div *ngIf="hasListPermission; else noPermission">
+      <ng-container *ngFor="let item of holidayDayData; let last = last">
+        <div style="overflow: auto;">
+          <span style="float: left;font-size: 12px;" class="leave-type">{{ item.holidayDayTr }}</span>
+          <span style="float: right;font-size: 12px;" class="start-date">{{item.totalHolidayDay}} Gün</span>
+
+          <span style="display: block; margin: 0 auto; text-align: center;font-size: 12px;" class="leave-period">
+            {{ item.holidayDate | date:"dd/MM" }}
+          </span>
+        </div>
+        <div *ngIf="!last" class="separator separator-dashed my-3"></div>
+      </ng-container>
+    </div>
+    <ng-template #noPermission>
+      <div class="text-center text-gray-600 fs-3 y-4">
+        Burayı görmek veya işlem yapmak için yetkiniz bulunmamaktadır.
+      </div>
+    </ng-template>
+  </div>
+</div>

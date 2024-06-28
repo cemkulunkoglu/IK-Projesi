@@ -1,0 +1,36 @@
+<div class="modal-sm">
+  <form novalidate="novalidate" [formGroup]="paymentUpdateForm" class="form col-lg-12 mx-auto">
+    <input type="text" matInput name="userId" formControlName="userId" hidden>
+    <div class="card-body p-9">
+      <div class="row">
+        <div class="col-lg-12 mb-5" style="padding: 0px 9.75px;">
+          <mat-checkbox formControlName="isPaid" id="flexCheckPaid">
+            Ödendi mi?
+          </mat-checkbox>
+        </div>
+        <div class="col-lg-12" *ngIf="paymentUpdateForm.get('isPaid').value">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Ödenen Tarihi</mat-label>
+            <input formControlName="paidDate" matInput [ngxMatDatetimePicker]="pickerEnd" (focus)="pickerEnd.open()"
+              autocomplete="off">
+            <mat-datepicker-toggle matSuffix [for]="$any(pickerEnd)"></mat-datepicker-toggle>
+            <ngx-mat-datetime-picker #pickerEnd [showSpinners]="true">
+            </ngx-mat-datetime-picker>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end py-6 px-9">
+      <button type="button" class="btn btn-sm btn-success"
+        [disabled]="paymentUpdateForm.invalid || (isLoading$ | async)" (click)="savePayment()">
+        <ng-container *ngIf="!(isLoading$ | async)">Kaydet</ng-container>
+        <ng-container *ngIf="isLoading$ | async">
+          <span clas="indicator-progress" [style.display]="'block'">
+            Lütfen bekleyiniz...
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+          </span>
+        </ng-container>
+      </button>
+    </div>
+  </form>
+</div>

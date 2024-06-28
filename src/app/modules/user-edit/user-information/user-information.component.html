@@ -1,0 +1,124 @@
+<div class="card mb-5 mb-xl-12" id="kt_profile_details_view">
+  <form novalidate="novalidate" [formGroup]="updateUserForm" class="form col-lg-12 mx-auto">
+    <input type="text" matInput name="id" formControlName="id" hidden>
+    <div class="card-body p-9">
+      <div class="row">
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Ad</mat-label>
+            <input type="text" matInput name="name" formControlName="name"
+              [readonly]="!hasPermission('employee-name-update')">
+            <mat-error *ngIf="updateUserForm.controls['name'].hasError('required')">
+              Ad <strong>Zorunludur</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Soyad</mat-label>
+            <input type="text" matInput name="surname" formControlName="surname"
+              [readonly]="!hasPermission('employee-surname-update')">
+            <mat-error *ngIf="updateUserForm.controls['surname'].hasError('required')">
+              Soyad <strong>Zorunludur</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>E Mail (İş)</mat-label>
+            <input type="text" matInput name="emailBusiness" formControlName="emailBusiness"
+              [readonly]="!hasPermission('employee-work-email-update')">
+            <mat-error *ngIf="updateUserForm.controls['emailBusiness'].hasError('required')">
+              E Mail (İş) <strong>Zorunludur</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>E Mail (Kişisel)</mat-label>
+            <input type="text" matInput name="emailPersonal" formControlName="emailPersonal"
+              [readonly]="!hasPermission('employee-personel-email-update')">
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Telefon (İş)</mat-label>
+            <input type="text" matInput name="phoneBusiness" formControlName="phoneBusiness" maxlength="11"
+              (input)="onInputNumberOnly($event)" [readonly]="!hasPermission('employee-work-phone-number-update')">
+            <mat-error *ngIf="updateUserForm.controls['phoneBusiness'].hasError('required')">
+              Telefon (İş)<strong>Zorunludur</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Telefon (Kişisel)</mat-label>
+            <input type="text" matInput name="phonePersonal" formControlName="phonePersonal" maxlength="11"
+              (input)="onInputNumberOnly($event)" [readonly]="!hasPermission('employee-personel-phone-number-update')">
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>İşe Başlama Tarihi</mat-label>
+            <input matInput formControlName="startDate" [matDatepicker]="picker"
+              [readonly]="!hasPermission('user-update')">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Erişim Türü</mat-label>
+            <mat-select formControlName="accessType">
+              <mat-option *ngFor="let item of accessTypeSources" [value]="item"
+                [disabled]="!hasPermission('user-update')">
+                {{accessTypeLabelMapping[item]}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="updateUserForm.get('accessType')">Erişim Tipi</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Sözleşme Türü</mat-label>
+            <mat-select formControlName="contractType">
+              <mat-option *ngFor="let item of contractTypeSources" [value]="item"
+                [disabled]="!hasPermission('user-update')">
+                {{contractTypeLabelMapping[item]}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="updateUserForm.get('contractType')">Sözleşme Türü</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Sözleşme Bitiş Tarihi</mat-label>
+            <input matInput formControlName="contractEndDate" [matDatepicker]="picker2"
+              [disabled]="!hasPermission('user-update')">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-12 fv-row" *ngIf="shouldShowExitReason()">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>İşten Çıkış Nedeni</mat-label>
+            <textarea matInput name="description" formControlName="description"
+              [readonly]="!hasPermission('user-update')"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end py-6 px-9">
+      <button type="button" class="btn btn-sm btn-success" [disabled]="updateUserForm.invalid || (isLoading$ | async)"
+        (click)="saveUser()">
+        <ng-container *ngIf="!(isLoading$ | async)">Kaydet</ng-container>
+        <ng-container *ngIf="isLoading$ | async">
+          <span class="indicator-progress" [style.display]="'block'">
+            Lütfen bekleyiniz...
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+          </span>
+        </ng-container>
+      </button>
+    </div>
+  </form>
+</div>

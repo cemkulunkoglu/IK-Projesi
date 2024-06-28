@@ -1,0 +1,70 @@
+<div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+  <div class="card-body p-2">
+    <dx-data-grid id="gridContainer" [dataSource]="dataSource" [columnAutoWidth]="true" [showRowLines]="false"
+      [showColumnLines]="false" [showBorders]="true" [rowAlternationEnabled]="true">
+      <dxo-toolbar>
+        <dxi-item location="before" locateInMenu="auto">
+          <h3 class="fw-bolder m-0">İzinler</h3>
+        </dxi-item>
+        <dxi-item name="searchPanel"></dxi-item>
+      </dxo-toolbar>
+      <dxo-paging [pageSize]="25"></dxo-paging>
+      <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[25, 50, 100]"></dxo-pager>
+      <dxo-filter-panel [visible]="false"></dxo-filter-panel>
+      <dxo-filter-row [visible]="false"></dxo-filter-row>
+      <dxo-header-filter [visible]="false"></dxo-header-filter>
+      <dxo-search-panel [visible]="true" [highlightCaseSensitive]="true"></dxo-search-panel>
+      <dxo-group-panel [visible]="false"></dxo-group-panel>
+
+      <dxi-column dataField="combinedColumn" caption="Ad" [allowFiltering]="false" [allowSorting]="false"
+      cellTemplate="combinedCellTemplate"></dxi-column>
+      <dxi-column dataField="startDate" dataType="date" caption="Başlangıç" format='dd/MM/yyyy HH:mm'></dxi-column>
+      <dxi-column dataField="endDate" dataType="date" caption="Bitiş" format='dd/MM/yyyy HH:mm'></dxi-column>
+      <dxi-column dataField="leavePeriod" dataType="string" caption="Süre"></dxi-column>
+      <dxi-column dataField="leaveTypeId" dataType="string" caption="İzin Türü" cellTemplate="leaveTypeTemplate"></dxi-column>
+      <dxi-column dataField="description" dataType="string" caption="Açıklama"></dxi-column>
+      <dxi-column dataField="createdDate" dataType="date" caption="Oluşturulma Tarih" format='dd/MM/yyyy HH:mm'></dxi-column>
+      <dxi-column dataField="status" dataType="string" caption="Durum" cellTemplate="statusTypeTemplate"></dxi-column>
+      <dxi-column type="buttons" [width]="110" [fixed]="true" caption="İşlemler"
+        cellTemplate="cellBtnTemplateLeave"></dxi-column>
+
+        <div *dxTemplate="let data of 'combinedCellTemplate'">
+          <div style="display: flex; align-items: center; ">
+            <img [src]="data.data.profilPicture == null ? './assets/media/avatars/blank.png' : data.data.profilPicture"
+              style="width:50px; height: 50px; border-radius: 8px; margin-right: 10px;" />
+            <div>
+              <a href="/user-edit/{{data.data.userId}}">
+              <span style="margin-bottom: 0.25rem!important; color: #333 !important;"><b>{{ data.data.userName }} </b></span><br>
+            </a>
+            </div>
+          </div>
+        </div>
+      <div *dxTemplate="let item of 'cellBtnTemplateLeave'">
+        <a (click)="editLeaveClick(item, userLeaveEdit)"
+          class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1" title="Düzenle">
+          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen055.svg'"></span>
+        </a>
+        <a (click)="deleteLeaveClick(item)" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" title="Sil">
+          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/arrows/arr011.svg'"></span>
+        </a>
+      </div>
+      <div *dxTemplate="let data of 'statusTypeTemplate'">
+        <span>{{StatusTypeEnumLabelMapping[data.value]}}</span>
+      </div>
+      <div *dxTemplate="let data of 'leaveTypeTemplate'">
+        <span>{{LeaveTypeEnumLabelMapping[data.value]}}</span>
+      </div>
+    </dx-data-grid>
+  </div>
+</div>
+
+
+<ng-template #userLeaveEdit let-c="close" let-d="dismiss">
+
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">İzin Düzenleme</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+    </div>
+       <app-update-leave-request-panel [leaveId]="leaveId" (userLeaveEdit)="reloadDataSource($event)"></app-update-leave-request-panel>
+
+</ng-template>

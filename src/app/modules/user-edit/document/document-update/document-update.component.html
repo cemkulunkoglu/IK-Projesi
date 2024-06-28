@@ -1,0 +1,37 @@
+<form novalidate="novalidate" [formGroup]="documentUpdateForm" class="form col-lg-12 mx-auto">
+  <input type="text" matInput name="userId" formControlName="userId" hidden>
+  <div class="card-body p-9">
+    <div class="row">
+      <div class="col-lg-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Döküman Tipi</mat-label>
+          <mat-select formControlName="documentTypeId">
+            <mat-option *ngFor="let category of documentCategories" [value]="category.id">
+              {{ category.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="documentUpdateForm.controls['documentTypeId'].hasError('required')">
+            Döküman Tipi <strong>Zorunludur</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>İsim</mat-label>
+          <input type="text" matInput name="name" formControlName="name">
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer d-flex justify-content-end py-6 px-9">
+    <button type="button" class="btn btn-sm btn-success" [disabled]="documentUpdateForm.invalid || (isLoading$ | async)" (click)="saveDocument()">
+      <ng-container *ngIf="!(isLoading$ | async)">Kaydet</ng-container>
+      <ng-container *ngIf="isLoading$ | async">
+        <span clas="indicator-progress" [style.display]="'block'">
+          Lütfen bekleyiniz...
+          <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+        </span>
+      </ng-container>
+    </button>
+  </div>
+</form>

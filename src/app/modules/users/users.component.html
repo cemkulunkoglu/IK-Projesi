@@ -1,0 +1,68 @@
+<div *ngIf="hasListPermission">
+  <div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+    <div class="card-header">
+      <div class="w-100 card-title m-0">
+        <h3 class="w-100 fw-bolder m-0" style="color: #004585;">Çalışan Listesi({{dataLength}})</h3>
+        <div class="w-100 d-flex justify-content-end align-items-center">
+          <div class="me-5 mt-5">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Filtrele</mat-label>
+              <mat-select [(ngModel)]="selectedValue" (selectionChange)="loadUsers($event.value)">
+                <mat-option value="">Tümü</mat-option>
+                <mat-option value="true">Aktif</mat-option>
+                <mat-option value="false">Pasif</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div>
+            <button (click)="routeToCreateUser()" class="btn main-btn" [disabled]="!hasCreatePermission">
+              Yeni Çalışan Ekle
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-6 mb-6 g-xl-9 mb-xl-9">
+    <div class="col-lg-12">
+      <div class="w-100 input-group">
+        <input type="text" class="form-control" placeholder="Çalışan Ara" [(ngModel)]="searchTerm"
+          (ngModelChange)="searchUsers()" />
+      </div>
+    </div>
+    <div *ngFor="let user of filteredUsers" class="col-md-6 col-xxl-3">
+      <div class="card" style="height: 100%;">
+        <div class="card-body d-flex flex-center flex-column py-9 px-5">
+          <div class="symbol symbol-65px symbol-circle mb-5">
+            <img [src]="user.profilPicture ? user.profilPicture : './assets/media/avatars/blank.png'"
+              alt="{{ user.name[0] }}">
+            <div
+              class="bg-{{user.isActive ? 'success' : 'danger'}} position-absolute rounded-circle translate-middle start-100 top-100 border border-4 border-body h-15px w-15px ms-n3 mt-n3">
+            </div>
+          </div>
+          <a href="user-edit/{{user.id}}" class="fs-4 text-gray-800 text-hover-primary fw-bold mb-0">{{ user.name }} {{
+            user.surname }}</a>
+          <div class="fw-semibold text-gray-400 mb-6">{{ user.emailBusiness }}</div>
+          <div class="d-flex flex-center flex-wrap ">
+            <div class="fw-semibold text-gray-400">{{ user.departmanName }}</div>
+          </div>
+          <div class="d-flex flex-center flex-wrap mb-5">
+            <div class="fw-semibold text-gray-400">{{ user.jobTitle }}</div>
+          </div>
+          <div>
+            <button (click)="editUserClick(user)" class="btn btn-sm btn-light-primary me-2"
+              *ngIf="hasUpdatePermission">İncele</button>
+            <!-- <button class="btn btn-sm btn-light-danger me-2" (click)="openSetUserActiveDialog(user.id)">İşten Çıkart</button> -->
+            <button class="btn btn-sm me-2" [ngClass]="user.isActive ? 'btn-light-danger' : 'btn-light-success'"
+              (click)="user.isActive ? openSetUserActiveDialog(user.id) : hireUser(user.id)"
+              *ngIf="hasDeletePermission">
+              {{ user.isActive ? 'İşten Çıkart' : 'İşe Ekle' }}
+            </button>
+            <!-- <a (click)="setUserActive(user)" class="btn btn-sm btn-light-{{user.isActive ? 'success' : 'danger'}}">{{user.isActive ? "Pasif" : "Aktif"}} Yap</a> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,105 @@
+<div *ngIf="hasListPermission">
+  <div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+    <div class="card-body p-2">
+      <dx-data-grid id="gridContainer" [dataSource]="dataSource" [columnAutoWidth]="true" [showRowLines]="false"
+        [showColumnLines]="false" [showBorders]="true" [rowAlternationEnabled]="true"
+        (onRowClick)="onRowClick($event, userLeaveDetailModal)">
+        <dxo-toolbar>
+          <dxi-item location="before" locateInMenu="auto">
+            <div class="tabs">
+              <ul class="nav nav-tabs">
+                <li class="nav-item" [class.active]="selectedTab === 1">
+                  <a class="nav-link" (click)="sendRequest(1)">Yaklaşan İzinler</a>
+                </li>
+                <li class="nav-item" [class.active]="selectedTab === 2">
+                  <a class="nav-link" (click)="sendRequest(2)">Onay Bekleyenler</a>
+                </li>
+                <li class="nav-item" [class.active]="selectedTab === 3">
+                  <a class="nav-link" (click)="sendRequest(3)">Onaylananlar</a>
+                </li>
+                <li class="nav-item" [class.active]="selectedTab === 4">
+                  <a class="nav-link" (click)="sendRequest(4)">Reddedilenler</a>
+                </li>
+              </ul>
+            </div>
+          </dxi-item>
+          <dxi-item location="after" locateInMenu="auto">
+            <div *ngIf="_tabNumber == 3">
+              <mat-form-field>
+                <mat-date-range-input [rangePicker]="picker">
+                  <input matStartDate matInput placeholder="Başlangıç Tarihi" [(ngModel)]="_startDate"
+                    (dateChange)="onChangeStartDate($event)">
+                  <input matEndDate matInput placeholder="Bitiş Tarihi" [(ngModel)]="_endDate"
+                    (dateChange)="onChangeEndDate($event)">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+              </mat-form-field>
+            </div>
+          </dxi-item>
+          <dxi-item name="searchPanel"></dxi-item>
+        </dxo-toolbar>
+        <dxo-paging [pageSize]="25"></dxo-paging>
+        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[25, 50, 100]"></dxo-pager>
+        <dxo-filter-panel [visible]="false"></dxo-filter-panel>
+        <dxo-filter-row [visible]="false"></dxo-filter-row>
+        <dxo-header-filter [visible]="false"></dxo-header-filter>
+        <dxo-search-panel [visible]="true" [highlightCaseSensitive]="true"></dxo-search-panel>
+        <dxo-group-panel [visible]="false"></dxo-group-panel>
+
+        <dxi-column dataField="userName" dataType="string" caption="Çalışan"></dxi-column>
+        <dxi-column dataField="startDate" dataType="date" caption="Başlangıç" format='dd/MM/yyyy HH:mm'></dxi-column>
+        <dxi-column dataField="endDate" dataType="date" caption="Bitiş" format='dd/MM/yyyy HH:mm'></dxi-column>
+        <dxi-column dataField="leavePeriod" dataType="string" caption="Süre"></dxi-column>
+        <dxi-column dataField="leaveTypeId" dataType="string" caption="İzin Türü"
+          cellTemplate="leaveTypeTemplate"></dxi-column>
+        <dxi-column dataField="createdDate" dataType="date" caption="Oluşturulma Tarih"
+          format='dd/MM/yyyy HH:mm'></dxi-column>
+        <dxi-column dataField="status" dataType="string" caption="Durum" cellTemplate="statusTypeTemplate"></dxi-column>
+        <dxi-column type="buttons" [width]="110" [fixed]="true" caption="İşlemler"
+          cellTemplate="cellBtnTemplateLeave"></dxi-column>
+
+        <dxo-master-detail [enabled]="detailRow !== null" template="detail"></dxo-master-detail>
+        <div *dxTemplate="let detail of 'detail'">
+          <div class="master-detail-caption">
+            <strong>Açıklama : </strong> {{ clickedRowDescription }}
+          </div>
+        </div>
+        <div *dxTemplate="let item of 'cellBtnTemplateLeave'">
+          <button *ngIf="selectedTab == 2" (click)="editLeaveClick(item, userLeaveEdit)"
+            [disabled]="!hasUpdatePermission" class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1"
+            title="Düzenle">
+            <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen055.svg'"></span>
+          </button>
+          <button (click)="showLeaveDetailClick(item, userLeaveDetailModal)"
+            class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1" title="Detay Göster">
+            <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen023.svg'"></span>
+          </button>
+        </div>
+        <div *dxTemplate="let data of 'statusTypeTemplate'">
+          <span>{{StatusTypeEnumLabelMapping[data.value]}}</span>
+        </div>
+        <div *dxTemplate="let data of 'leaveTypeTemplate'">
+          <span>{{LeaveTypeEnumLabelMapping[data.value]}}</span>
+        </div>
+      </dx-data-grid>
+    </div>
+  </div>
+
+  <ng-template #userLeaveEdit let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">İzin Düzenleme</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+    </div>
+    <app-update-leave-information [leaveId]="leaveId"
+      (userLeaveEdit)="reloadDataSource($event)"></app-update-leave-information>
+  </ng-template>
+
+  <ng-template #userLeaveDetailModal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">İzin Talebi</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+    </div>
+    <app-leave-information-detail-modal [leaveId]="leaveId"></app-leave-information-detail-modal>
+  </ng-template>
+</div>

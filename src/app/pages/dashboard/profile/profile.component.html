@@ -1,0 +1,68 @@
+<div class="card mb-5 mb-xl-8 h-100">
+  <!--begin::Card body-->
+  <div class="card-body">
+    <!--begin::Summary-->
+
+
+    <!--begin::User Info-->
+    <div class="d-flex flex-center flex-column py-5">
+      <!--begin::Avatar-->
+      <div class="symbol symbol-100px symbol-circle">
+        <img src="{{userData.profilePicture ? userData.profilePicture : './assets/media/avatars/blank.png'}}"
+          alt="image">
+      </div>
+      <!--end::Avatar-->
+
+      <!--begin::Name-->
+      <a href="/user-edit/{{userData.userId}}" class="fs-3 text-gray-800 text-hover-primary fw-bold mb-3">
+        {{userData.userName }} </a>
+      <!--end::Name-->
+
+      <!--begin::Position-->
+
+      <!--end::Position-->
+
+      <!--begin::Info-->
+      <!--begin::Info heading-->
+
+      <!--end::Info heading-->
+
+
+      <!--end::Info-->
+    </div>
+    <!--end::User Info--> <!--end::Summary-->
+
+    <!--begin::Details toggle-->
+    <div class="d-flex flex-stack fs-4 py-3">
+      <div class="fw-bold rotate collapsible active" data-bs-toggle="collapse" href="#kt_user_view_details"
+        role="button" aria-expanded="true" aria-controls="kt_user_view_details">
+        Detay
+        <span class="ms-2 rotate-180">
+          <i class="ki-duotone ki-down fs-3"></i> </span>
+      </div>
+
+      <span data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-original-title="Edit customer details"
+        data-kt-initialized="1">
+        <a href="/user-edit/{{userData.userId}}" class="btn btn-sm btn-light-primary" data-bs-toggle="modal"
+          data-bs-target="#kt_modal_update_details">
+          Profilim
+        </a>
+      </span>
+    </div>
+    <!--end::Details toggle-->
+
+    <div class="separator"></div>
+
+    <!--begin::Details content-->
+    <div id="kt_user_view_details" class="collapse show">
+      <div class="pb-5 fs-6">
+        <!--begin::Details item-->
+        <div class="fw-bold mt-5">İşe Başlama Tarihi</div>
+        <div class="text-gray-600">{{userData.startDate | date:'dd/MM/yyyy'}}</div>
+        <!--begin::Details item-->
+      </div>
+    </div>
+    <!--end::Details content-->
+  </div>
+  <!--end::Card body-->
+</div>

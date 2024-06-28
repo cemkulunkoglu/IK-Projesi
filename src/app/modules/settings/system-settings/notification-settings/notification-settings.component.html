@@ -1,0 +1,105 @@
+<div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+    <form novalidate="novalidate" [formGroup]="notificationSettingsForm" class="form col-lg-12 mx-auto">
+        <input type="text" matInput name="id" formControlName="id" hidden>
+        <div class="card-body p-9">
+            <div class="row">
+                <div class="col-lg-12 fv-row">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Bildirim Yöneticileri</mat-label>
+                        <mat-chip-list #chipList aria-label="Notification managers selection">
+                            <mat-chip
+                                *ngFor="let manager of notificationSettingsForm.get('notificationSettingManagers').value"
+                                [selectable]="true" [removable]="true" (removed)="removeManager(manager)">
+                                {{ getManagerName(manager) }}
+                                <mat-icon matChipRemove>cancel</mat-icon>
+                            </mat-chip>
+                        </mat-chip-list>
+                        <mat-select placeholder="Yeni yönetici eklemek için tıklayın..." (selectionChange)="addManager($event)">
+                            <mat-option *ngFor="let manager of managersList" [value]="manager.id">
+                                {{ manager.name + ' ' + manager.surname}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-12 fv-row">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>E-posta Aboneliği</mat-label>
+                        <input matInput placeholder="example@example.com" formControlName="newsletterSubscribeEmail">
+                        <mat-error
+                            *ngIf="notificationSettingsForm.controls['newsletterSubscribeEmail'].hasError('required')">
+                            E-posta <strong>zorunludur</strong>
+                        </mat-error>
+                        <mat-error
+                            *ngIf="notificationSettingsForm.controls['newsletterSubscribeEmail'].hasError('email')">
+                            Geçerli bir e-posta adresi <strong>girin</strong>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-12 fv-row">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>İlk Deneme Süresi Bitişi (ay)</mat-label>
+                        <input matInput type="number" formControlName="firstTrialProcessEnding">
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-12 fv-row">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>İkinci Deneme Süresi Bitişi (ay)</mat-label>
+                        <input matInput type="number" formControlName="secondTrialProcessEnding">
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-12 fv-row">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Sözleşme Bitişi (ay)</mat-label>
+                        <input matInput type="number" formControlName="endOfContract">
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-12 fv-row">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Eğitim Haftası Bitişi (ay)</mat-label>
+                        <input matInput type="number" formControlName="endOfEducationWeek">
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <mat-checkbox formControlName="sendLeaveNotification">İzin Bildirimi Gönder</mat-checkbox>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <mat-checkbox formControlName="sendExtaLeaveNotification">Ekstra İzin Bildirimi
+                        Gönder</mat-checkbox>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <mat-checkbox formControlName="addLeaveFormToEmail">İzin Formunu E-postaya Ekle</mat-checkbox>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <mat-checkbox formControlName="sendAdvancePaymentNotification">Avans Bildirimi Gönder</mat-checkbox>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <mat-checkbox formControlName="sendSalaryBonusPaymentNotification">Maaş Bonus Bildirimi
+                        Gönder</mat-checkbox>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <mat-checkbox formControlName="sendExpenseNotification">Gider Bildirimi Gönder</mat-checkbox>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <mat-checkbox formControlName="sendBonusPaymentNotification">Bonus Ödeme Bildirimi
+                        Gönder</mat-checkbox>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <mat-checkbox formControlName="celebrateBirthday">Doğum Gününü Kutla</mat-checkbox>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-sm btn-primary"
+                    [disabled]="notificationSettingsForm.invalid || (isLoading$ | async)"
+                    (click)="saveNotificationSettings()">
+                    <ng-container *ngIf="!(isLoading$ | async)">Kaydet</ng-container>
+                    <ng-container *ngIf="isLoading$ | async">
+                        <span class="indicator-progress" [style.display]="'block'">
+                            Lütfen bekleyiniz...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </ng-container>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

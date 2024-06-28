@@ -1,0 +1,185 @@
+<div class="card mb-5 mb-xl-12" id="kt_profile_details_view">
+  <form novalidate="novalidate" [formGroup]="saveOtherInformationForm" class="form col-lg-12 mx-auto">
+    <input type="text" matInput name="userId" formControlName="userId" hidden>
+    <div class="card-body p-9">
+      <div class="row">
+        <div class="col-lg-12">
+          <h4>Adres Bilgileri</h4>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 fv-row">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Ülke</mat-label>
+              <mat-select formControlName="countryId" [(ngModel)]="selectedCountryId" [(value)]="selectedCountry">
+                <mat-option>
+                  <ngx-mat-select-search [formControl]="countrySearch" placeholderLabel="Listede ara..."
+                    noEntriesFoundLabel="Sonuç bulunamadı">
+                    <mat-icon ngxMatSelectSearchClear>
+                      <span class="svg-icon svg-icon-5" [inlineSVG]="'./assets/media/icons/arrows/arr061.svg'"></span>
+                    </mat-icon>
+                  </ngx-mat-select-search>
+                </mat-option>
+                <mat-option *ngFor="let item of countryFilteredData | async" [value]="item.id"
+                  [disabled]="!hasPermission('employee-country-update')">
+                  {{item.code}} - {{item.name}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="saveOtherInformationForm.get('countryId')">Ülke Seçiniz</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-4 fv-row">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Şehir</mat-label>
+              <input type="text" matInput name="city" formControlName="city"
+                [readonly]="!hasPermission('employee-city-update')">
+              <mat-error *ngIf="saveOtherInformationForm.controls['city']">Şehir</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-4 fv-row">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>İlçe</mat-label>
+              <input type="text" matInput name="district" formControlName="district"
+                [readonly]="!hasPermission('employee-city-update')">
+              <mat-error *ngIf="saveOtherInformationForm.controls['district']">İlçe</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-4  fv-row">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Adres</mat-label>
+              <input type="text" matInput name="address" formControlName="address"
+                [readonly]="!hasPermission('employee-address-update')">
+              <mat-error *ngIf="saveOtherInformationForm.controls['address']">Adres</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-4  fv-row">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Posta Kodu</mat-label>
+              <input type="text" matInput name="postCode" formControlName="postCode" (input)="onInputNumberOnly($event)"
+                [readonly]="!hasPermission('employee-zip-code-update')">
+              <mat-error *ngIf="saveOtherInformationForm.controls['postCode']">Posta Kodu</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-4  fv-row">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Ev Telefonu</mat-label>
+              <input type="text" matInput name="homePhone" formControlName="homePhone" maxlength="11"
+                (input)="onInputNumberOnly($event)" [readonly]="!hasPermission('employee-address-phone-number-update')">
+              <mat-error *ngIf="saveOtherInformationForm.controls['homePhone']">Ev Telefonu</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <h4>Banka Bilgileri</h4>
+        </div>
+        <div class="row">
+          <div class="col-lg-6  fv-row">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Banka Adı</mat-label>
+              <input type="text" matInput name="bankName" formControlName="bankName"
+                [readonly]="!hasPermission('employee-bank-name-update')">
+              <mat-error *ngIf="saveOtherInformationForm.controls['bankName']">Banka Adı</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-6">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Hesap Tipi</mat-label>
+              <mat-select formControlName="accountType">
+                <mat-option *ngFor="let item of accountTypeSources" [value]="item"
+                  [disabled]="!hasPermission('employee-bank-account-type-update')">
+                  {{accountTypeLabelMapping[item]}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="saveOtherInformationForm.get('accountType')">Hesap Tipi</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-6  fv-row">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Hesap No</mat-label>
+              <input type="text" matInput name="accountNumber" formControlName="accountNumber"
+                (input)="onInputNumberOnly($event)" [readonly]="!hasPermission('employee-bank-account-number-update')">
+              <mat-error *ngIf="saveOtherInformationForm.controls['accountNumber']">Hesap No</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-6  fv-row">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Iban</mat-label>
+              <input type="text" matInput name="iban" formControlName="iban" (input)="onInputNumberOnly($event)"
+                [readonly]="!hasPermission('employee-bank-iban-update')">
+              <mat-error *ngIf="saveOtherInformationForm.controls['iban']">Iban</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <h4>Acil Durum Bilgileri</h4>
+        </div>
+        <div class="row">
+          <div class="col-lg-4  fv-row">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Acil Durumda Aranacak Kişi</mat-label>
+              <input type="text" matInput name="emergencyContactPerson" formControlName="emergencyContactPerson"
+                [readonly]="!hasPermission('employee-emergency-call-person-update')">
+              <mat-error *ngIf="saveOtherInformationForm.controls['emergencyContactPerson']">Acil Durumda Aranacak
+                Kişi</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-4  fv-row">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Yakınlık Derecesi</mat-label>
+              <input type="text" matInput name="emergencyContactDegree" formControlName="emergencyContactDegree"
+                [readonly]="!hasPermission('employee-emergency-call-person-intimacy-update')">
+              <mat-error *ngIf="saveOtherInformationForm.controls['emergencyContactDegree']">Yakınlık
+                Derecesi</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-4  fv-row">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Telefon</mat-label>
+              <input type="text" matInput name="emergencyContactPhone" formControlName="emergencyContactPhone"
+                maxlength="11" (input)="onInputNumberOnly($event)"
+                [readonly]="!hasPermission('employee-emergency-call-person-phone-number-update')">
+              <mat-error *ngIf="saveOtherInformationForm.controls['emergencyContactPhone']">Telefon</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <h4>Bağlantılar (LinkedIn)</h4>
+        </div>
+        <div class="row">
+          <div class="col-lg-4  fv-row">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Bağlantı Adı</mat-label>
+              <input type="text" matInput name="connectionName" formControlName="connectionName"
+                [readonly]="!hasPermission('employee-social-media-name-update')">
+              <mat-error *ngIf="saveOtherInformationForm.controls['connectionName']">Bağlantı Adı</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-4  fv-row">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Bağlantı Adresi</mat-label>
+              <input type="text" matInput name="connectionAddress" formControlName="connectionAddress"
+                [readonly]="!hasPermission('employee-social-media-address-update')">
+              <mat-error *ngIf="saveOtherInformationForm.controls['connectionAddress']">Bağlantı Adresi</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end py-6 px-9">
+      <button type="button" class="btn btn-sm btn-success" (click)="saveOtherInformation()">
+        <ng-container *ngIf="!(isLoading$ | async)">Kaydet</ng-container>
+        <ng-container *ngIf="isLoading$ | async">
+          <span class="indicator-progress" [style.display]="'block'">
+            Lütfen bekleyiniz...
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+          </span>
+        </ng-container>
+      </button>
+    </div>
+  </form>
+</div>

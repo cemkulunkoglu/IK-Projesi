@@ -1,0 +1,138 @@
+<div *ngIf="hasListPermission">
+  <div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+    <div class="card-header">
+      <div class="w-100 card-title m-0">
+        <h3 class="w-100 fw-bolder m-0">Departman Listesi</h3>
+        <div class="w-100 d-flex justify-content-end">
+          <button class="btn btn-sm main-btn" (click)="openDepartmentAddModal()" [disabled]="!hasCreatePermission">
+            Departman Ekle
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-9">
+      <dx-data-grid id="gridContainer" [dataSource]="dataSource" [columnAutoWidth]="true" [showRowLines]="true"
+        [showColumnLines]="true" [showBorders]="true">
+
+        <dxo-paging [pageSize]="25"></dxo-paging>
+        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[25, 50, 100]"></dxo-pager>
+        <dxo-filter-row [visible]="true"></dxo-filter-row>
+        <dxo-header-filter [visible]="true"></dxo-header-filter>
+        <dxo-search-panel [visible]="true" [highlightCaseSensitive]="true"></dxo-search-panel>
+        <dxo-group-panel [visible]="true"></dxo-group-panel>
+
+        <dxi-column dataField="branchOfficeId" dataType="number" caption="Şube Adı">
+          <dxo-lookup [dataSource]="branchOfficeDataList" valueExpr="id" displayExpr="name"></dxo-lookup>
+        </dxi-column>
+        <dxi-column dataField="name" dataType="string" caption="Departman Adı"></dxi-column>
+        <dxi-column dataField="managers" caption="Yönetici" [width]="200" [allowSorting]="false"
+          editCellTemplate="tagBoxEditor" [cellTemplate]="cellTemplate"
+          [calculateFilterExpression]="calculateFilterExpression"></dxi-column>
+        <div *dxTemplate="let cellInfo of 'tagBoxEditor'">
+          <dx-tag-box [dataSource]="userDataList" [value]="cellInfo.value" valueExpr="id" displayExpr="name"
+            [showSelectionControls]="true" [maxDisplayedTags]="3" [showMultiTagOnly]="false"
+            [inputAttr]="{ 'aria-label': 'Name' }" applyValueMode="useButtons" [searchEnabled]="true"
+            (onValueChanged)="onManagerValueChanged($event, cellInfo)"
+            (onSelectionChanged)="cellInfo.component.updateDimensions()"></dx-tag-box>
+        </div>
+        <dxi-column type="buttons" [width]="110" [fixed]="true" caption="İşlemler"
+          cellTemplate="cellBtnTemplate"></dxi-column>
+        <div *dxTemplate="let data of 'cellBtnTemplate'">
+          <button class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1" title="Düzenle"
+            (click)="openDepartmentEditModal(data)" [disabled]="!hasUpdatePermission">
+            <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen055.svg'"></span>
+          </button>
+          <button title="Departmanı Sil" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm me-2"
+            (click)="deleteDepartment(data)" [disabled]="!hasDeletePermission">
+            <span class="svg-icon svg-icon-5" [inlineSVG]="'./assets/media/icons/duotune/general/gen027.svg'"></span>
+          </button>
+        </div>
+      </dx-data-grid>
+    </div>
+  </div>
+</div>
+
+<ng-template #departmentModal let-modal>
+  <form [formGroup]="departmentForm" (ngSubmit)="submitForm()">
+    <div class="modal-header">
+      <h5 class="modal-title">{{ isEditMode ? 'Departmanı Düzenle' : 'Yeni Departman Ekle' }}</h5>
+      <button type="button" class="btn-close" (click)="closeModal()"></button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-lg-6">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Departman Adı</mat-label>
+            <input matInput formControlName="name" required>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Şube Adı</mat-label>
+            <mat-select formControlName="branchOfficeId" required>
+              <mat-option *ngFor="let branch of branchOfficeDataList" [value]="branch.id">
+                {{ branch.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-12">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Yöneticiler</mat-label>
+            <mat-select formControlName="managers" multiple required>
+              <ngx-mat-select-search [formControl]="userSearch" placeholderLabel="Ara..."
+                noEntriesFoundLabel="Sonuç bulunamadı"></ngx-mat-select-search>
+              <mat-option *ngFor="let user of filteredUsers | async" [value]="user.id">
+                {{ user.name + ' ' + user.surname }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>İzin Onay Süreci</mat-label>
+            <mat-select formControlName="leaveApprovalProcessId">
+              <mat-option *ngFor="let process of approvalProcesses" [value]="process.id">
+                {{ process.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Avans Onay Süreci</mat-label>
+            <mat-select formControlName="advanceApprovalProcessId">
+              <mat-option *ngFor="let process of approvalProcesses" [value]="process.id">
+                {{ process.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Harcama Onay Süreci</mat-label>
+            <mat-select formControlName="paymentApprovalProcessId">
+              <mat-option *ngFor="let process of approvalProcesses" [value]="process.id">
+                {{ process.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Mesai Onay Süreci</mat-label>
+            <mat-select formControlName="overTimeApprovalProcessId">
+              <mat-option *ngFor="let process of approvalProcesses" [value]="process.id">
+                {{ process.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-sm btn-light" type="button" (click)="closeModal()">Kapat</button>
+      <button class="btn btn-sm btn-primary" type="submit">{{ isEditMode ? 'Güncelle' : 'Kaydet' }}</button>
+    </div>
+  </form>
+</ng-template>

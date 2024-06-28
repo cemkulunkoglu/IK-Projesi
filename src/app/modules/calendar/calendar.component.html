@@ -1,0 +1,32 @@
+<div style="width: 25%;float: right;">
+  <mat-form-field appearance="fill">
+    <mat-label>İzin Türü:</mat-label>
+    <mat-select [(value)]="selectedLeaveType" placeholder="Tümü" (selectionChange)="onLeaveTypeChange($event)">
+      <mat-option>Seçiniz</mat-option>
+      <mat-option *ngFor="let leaveTypes of leaveTypesEnumValues" [value]="leaveTypes.value">
+        {{ leaveTypes.label }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<dx-scheduler
+  timeZone="Europe/Istanbul"
+  [editing]="false"
+  [dataSource]="dataSource"
+  [views]="['month']"
+  currentView="Auto Mode"
+  [currentDate]="currentDate"
+  [height]="730"
+>
+  <dxi-view
+    name="İş Takvimim"
+    type="month"
+    maxAppointmentsPerCell="unlimited"
+  >
+  </dxi-view>
+  <dxi-resource
+    fieldExpr="roomId"
+    label="İzin Türü"
+    [dataSource]="resourcesData"
+  ></dxi-resource>
+</dx-scheduler>

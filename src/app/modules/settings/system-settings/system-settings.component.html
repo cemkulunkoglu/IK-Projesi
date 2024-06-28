@@ -1,0 +1,55 @@
+<div class="card mb-1 mb-xl-1" id="kt_system_settings_view">
+    <ul class="nav nav-tabs nav-line-tabs nav-line-tabs-2x mt-5 fs-3 d-flex justify-content-center">
+      <div class="row col-lg-10 mx-auto">
+        <div class="col">
+          <li class="nav-item d-flex justify-content-center">
+            <a class="nav-link cursor-pointer text-active-primary fw-bold" [ngClass]="{ active: activeTab === 'access' }"
+              (click)="setActiveTab('access')">Erişim Ayarları</a>
+          </li>
+        </div>
+        <div class="col">
+          <li class="nav-item d-flex justify-content-center">
+            <a class="nav-link cursor-pointer text-active-primary fw-bold"
+              [ngClass]="{ active: activeTab === 'notification' }" (click)="setActiveTab('notification')">Bildirim Ayarları</a>
+          </li>
+        </div>
+        <div class="col">
+          <li class="nav-item d-flex justify-content-center">
+            <a class="nav-link cursor-pointer text-active-primary fw-bold"
+              [ngClass]="{ active: activeTab === 'profile' }" (click)="setActiveTab('profile')">Profil Ayarları</a>
+          </li>
+        </div>
+        <div class="col">
+          <li class="nav-item d-flex justify-content-center">
+            <a class="nav-link cursor-pointer text-active-primary fw-bold"
+              [ngClass]="{ active: activeTab === 'request' }" (click)="setActiveTab('request')">Talep Ayarları</a>
+          </li>
+        </div>
+        <div class="col">
+          <li class="nav-item d-flex justify-content-center">
+            <a class="nav-link cursor-pointer text-active-primary fw-bold"
+              [ngClass]="{ active: activeTab === 'security' }" (click)="setActiveTab('security')">Güvenlik Ayarları</a>
+          </li>
+        </div>
+      </div>
+    </ul>
+  </div>
+  
+  <div class="tab-content">
+    <div class="tab-pane" [ngClass]="{ active: activeTab === 'access' }">
+      <app-access-settings></app-access-settings>
+    </div>
+    <div class="tab-pane" [ngClass]="{ active: activeTab === 'notification' }">
+      <app-notification-settings></app-notification-settings>
+    </div>
+    <div class="tab-pane" [ngClass]="{ active: activeTab === 'profile' }">
+      <app-profile-settings></app-profile-settings>
+    </div>
+    <div class="tab-pane" [ngClass]="{ active: activeTab === 'request' }">
+      <app-request-settings></app-request-settings>
+    </div>
+    <div class="tab-pane" [ngClass]="{ active: activeTab === 'security' }">
+      <app-security-settings></app-security-settings>
+    </div>
+  </div>
+  

@@ -1,0 +1,79 @@
+<div *ngIf="hasListPermission; else noPermission">
+  <div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+    <div class="card-body px-10">
+      <dx-data-grid id="gridContainer" [dataSource]="dataSource" [columnAutoWidth]="true" [showRowLines]="false"
+        [showColumnLines]="false" [showBorders]="true" [rowAlternationEnabled]="true">
+        <dxo-toolbar>
+          <dxi-item location="before" locateInMenu="auto">
+            <button (click)="showEducationModal(userEducationCreate)" class="btn btn-sm main-btn align-self-center"
+              *ngIf="hasCreatePermission">
+              Eğitim Ata
+            </button>
+          </dxi-item>
+          <dxi-item *ngIf="!isEmployee()" location="before" locateInMenu="auto">
+            <button (click)="redirectToCreateEducation()" class="btn btn-sm light-main-btn" *ngIf="hasCreatePermission">
+              Eğitim Oluştur
+            </button>
+          </dxi-item>
+          <dxi-item name="searchPanel"></dxi-item>
+        </dxo-toolbar>
+        <dxo-paging [pageSize]="25"></dxo-paging>
+        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[25, 50, 100]"></dxo-pager>
+        <dxo-filter-panel [visible]="false"></dxo-filter-panel>
+        <dxo-filter-row [visible]="false"></dxo-filter-row>
+        <dxo-header-filter [visible]="false"></dxo-header-filter>
+        <dxo-search-panel [visible]="true" [highlightCaseSensitive]="true"></dxo-search-panel>
+        <dxo-group-panel [visible]="false"></dxo-group-panel>
+
+        <dxi-column dataField="educationName" dataType="string" caption="Eğitim Adı"></dxi-column>
+        <dxi-column dataField="userEducationStatus" dataType="string" caption="Eğitim Durumu"
+          cellTemplate="UserEducationStatusLabelMapping"></dxi-column>
+        <dxi-column dataField="description" dataType="string" caption="Açıklama"></dxi-column>
+        <dxi-column dataField="completionDate" dataType="date" caption="Eğitim Tarihi"
+          format="dd/MM/yyyy HH:mm"></dxi-column>
+        <dxi-column type="buttons" [width]="110" [fixed]="true" caption="İşlemler"
+          cellTemplate="cellBtnTemplate"></dxi-column>
+
+        <div *dxTemplate="let data of 'UserEducationStatusLabelMapping'">
+          <span>{{UserEducationStatusLabelMapping[data.value]}}</span>
+        </div>
+
+        <div *dxTemplate="let item of 'cellBtnTemplate'">
+          <button (click)="editEducationClick(item, userEducationEdit)" *ngIf="hasUpdatePermission"
+            class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1" title="Düzenle">
+            <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen055.svg'"></span>
+          </button>
+          <button (click)="deleteEducationClick(item)" *ngIf="hasDeletePermission"
+            class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" title="Sil">
+            <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/arrows/arr011.svg'"></span>
+          </button>
+        </div>
+      </dx-data-grid>
+    </div>
+  </div>
+</div>
+
+<ng-template #userEducationCreate let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Eğitim Ekleme</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+  <app-education-create [userId]="userId" (userEducationCreate)="reloadDataSource($event)"></app-education-create>
+</ng-template>
+
+<ng-template #userEducationEdit let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Eğitim Bilgisi Düzenleme</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+  <app-education-update [educationId]="currentEducationId"
+    (userEducationEdit)="reloadDataSource($event)"></app-education-update>
+</ng-template>
+
+<ng-template #noPermission>
+  <div class="card">
+    <div class="card-body">
+      <p>Burayı görmek veya işlem yapmak için yetkiniz bulunmamaktadır.</p>
+    </div>
+  </div>
+</ng-template>

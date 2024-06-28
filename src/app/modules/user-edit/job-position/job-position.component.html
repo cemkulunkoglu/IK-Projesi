@@ -1,0 +1,66 @@
+<div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+  <div class="card-body p-2">
+    <dx-data-grid id="gridContainer" [dataSource]="dataSource" [columnAutoWidth]="true" [showRowLines]="true"
+      [showColumnLines]="false" [showBorders]="true">
+      <dxo-toolbar>
+        <dxi-item location="before" locateInMenu="auto">
+          <button (click)="showJobPositionModal(userJobPositionCreate)" class="btn btn-sm main-btn align-self-center"
+            *ngIf="hasPermission('user-job-position-create')">
+            Pozisyon Ekle
+          </button>
+        </dxi-item>
+        <dxi-item name="searchPanel"></dxi-item>
+      </dxo-toolbar>
+      <dxo-paging [pageSize]="25"></dxo-paging>
+      <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[25, 50, 100]"></dxo-pager>
+      <dxo-filter-panel [visible]="false"></dxo-filter-panel>
+      <dxo-filter-row [visible]="false"></dxo-filter-row>
+      <dxo-header-filter [visible]="false"></dxo-header-filter>
+      <dxo-search-panel [visible]="true" [highlightCaseSensitive]="true"></dxo-search-panel>
+      <dxo-group-panel [visible]="false"></dxo-group-panel>
+
+      <dxi-column dataField="jobTitle" dataType="string" caption="Ünvan"></dxi-column>
+      <dxi-column dataField="workingMethod" dataType="string" caption="Çalışma Şekli"
+        cellTemplate="workingMethodTemplate"></dxi-column>
+      <dxi-column dataField="manager" dataType="string" caption="Yönetici"></dxi-column>
+      <dxi-column dataField="department" dataType="string" caption="Departman"></dxi-column>
+      <dxi-column dataField="startDate" dataType="date" caption="Başlangıç Tarihi" format='dd/MM/yyyy'></dxi-column>
+      <dxi-column dataField="endDate" dataType="date" caption="Bitiş Tarihi" format='dd/MM/yyyy'></dxi-column>
+      <dxi-column type="buttons" [width]="110" [fixed]="true" caption="İşlemler"
+        cellTemplate="cellBtnTemplate"></dxi-column>
+
+      <div *dxTemplate="let item of 'cellBtnTemplate'">
+        <button (click)="editJobPositionClick(item, userJobPositionEdit)"
+          class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1" title="Düzenle"
+          *ngIf="hasPermission('user-job-position-update')">
+          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen055.svg'"></span>
+        </button>
+        <button (click)="deleteJobPositionClick(item)" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm"
+          title="Sil" *ngIf="hasPermission('user-job-position-delete')">
+          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/arrows/arr011.svg'"></span>
+        </button>
+      </div>
+      <div *dxTemplate="let data of 'workingMethodTemplate'">
+        <span>{{ WorkingMethodLabelMapping[data.value] }}</span>
+      </div>
+    </dx-data-grid>
+  </div>
+</div>
+
+<ng-template #userJobPositionCreate let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">İş Bilgileri Ekleme</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+  <app-job-position-create [userId]="userId"
+    (userJobPositionCreate)="reloadDataSource($event)"></app-job-position-create>
+</ng-template>
+
+<ng-template #userJobPositionEdit let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">İş Bilgileri Düzenleme</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+  <app-job-position-update [jobPositionId]="jobPositionId"
+    (userJobPositionEdit)="reloadDataSource($event)"></app-job-position-update>
+</ng-template>

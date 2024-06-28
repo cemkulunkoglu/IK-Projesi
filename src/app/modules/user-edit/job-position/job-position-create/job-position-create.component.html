@@ -1,0 +1,144 @@
+<form novalidate="novalidate" [formGroup]="jobPositionCreateForm" class="form col-lg-12 mx-auto">
+  <input type="text" matInput name="userId" formControlName="userId" hidden>
+  <div class="card-body p-9">
+    <div class="row">
+      <div class="col-lg-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Şirket</mat-label>
+          <mat-select formControlName="companyId" [(ngModel)]="selectedCompanyId" [(value)]="selectedCompany">
+            <mat-option>
+              <ngx-mat-select-search [formControl]="companySearch" placeholderLabel="Listede ara..."
+                noEntriesFoundLabel="Sonuç bulunamadı">
+                <mat-icon ngxMatSelectSearchClear>
+                  <span class="svg-icon svg-icon-5" [inlineSVG]="'./assets/media/icons/arrows/arr061.svg'"></span>
+                </mat-icon>
+              </ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let item of companyFilteredData | async" [value]="item.id" (click)="onChangeCompany()">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="jobPositionCreateForm.controls['companyId'].hasError('required')">Şube Seçiniz</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Şube</mat-label>
+          <mat-select formControlName="branchOfficeId" [(ngModel)]="selectedBranchOfficeId"
+            [(value)]="selectedBranchOffice">
+            <mat-option>
+              <ngx-mat-select-search [formControl]="branchOfficeSearch" placeholderLabel="Listede ara..."
+                noEntriesFoundLabel="Sonuç bulunamadı">
+                <mat-icon ngxMatSelectSearchClear>
+                  <span class="svg-icon svg-icon-5" [inlineSVG]="'./assets/media/icons/arrows/arr061.svg'"></span>
+                </mat-icon>
+              </ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let item of branchOfficeFilteredData | async" [value]="item.id"
+              (click)="onChangeBranchOffice()">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="jobPositionCreateForm.get('branchOfficeId')">Şube Seçiniz</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Departman</mat-label>
+          <mat-select formControlName="departmentId" [(ngModel)]="selectedDepartmentId" [(value)]="selectedDepartment">
+            <mat-option>
+              <ngx-mat-select-search [formControl]="departmentSearch" placeholderLabel="Listede ara..."
+                noEntriesFoundLabel="Sonuç bulunamadı">
+                <mat-icon ngxMatSelectSearchClear>
+                  <span class="svg-icon svg-icon-5" [inlineSVG]="'./assets/media/icons/arrows/arr061.svg'"></span>
+                </mat-icon>
+              </ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let item of departmentFilteredData | async" [value]="item.id"
+              (click)="onChangeDepartment()">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="jobPositionCreateForm.controls['departmentId'].hasError('required')">Departman
+            Seçiniz</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Ünvan</mat-label>
+          <mat-select formControlName="jobTitleId" [(ngModel)]="selectedJobTitleId" [(value)]="selectedJobTitle">
+            <mat-option>
+              <ngx-mat-select-search [formControl]="jobTitleSearch" placeholderLabel="Listede ara..."
+                noEntriesFoundLabel="Sonuç bulunamadı">
+                <mat-icon ngxMatSelectSearchClear>
+                  <span class="svg-icon svg-icon-5" [inlineSVG]="'./assets/media/icons/arrows/arr061.svg'"></span>
+                </mat-icon>
+              </ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let item of jobTitleFilteredData | async" [value]="item.id">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="jobPositionCreateForm.get('jobTitleId')">Ünvan Seçiniz</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Yönetici</mat-label>
+          <mat-select formControlName="managerId" [(ngModel)]="selectedManagerId" [(value)]="selectedManager">
+            <mat-option>
+              <ngx-mat-select-search [formControl]="managerSearch" placeholderLabel="Listede ara..."
+                noEntriesFoundLabel="Sonuç bulunamadı">
+                <mat-icon ngxMatSelectSearchClear>
+                  <span class="svg-icon svg-icon-5" [inlineSVG]="'./assets/media/icons/arrows/arr061.svg'"></span>
+                </mat-icon>
+              </ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let item of managerFilteredData | async" [value]="item.id">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="jobPositionCreateForm.get('managerId')">Yönetici Seçiniz</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Çalışma Şekli</mat-label>
+          <mat-select formControlName="workingMethod">
+            <mat-option *ngFor="let item of workingMethodSources" [value]="item">
+              {{workingMethodLabelMapping[item]}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="jobPositionCreateForm.get('workingMethod')">Çalışma Şekli</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Başlangıç Tarihi</mat-label>
+          <input matInput formControlName="startDate" [matDatepicker]="pickerStart" required="true">
+          <mat-datepicker-toggle matSuffix [for]="pickerStart" ></mat-datepicker-toggle>
+          <mat-datepicker #pickerStart ></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Bitiş Tarihi</mat-label>
+          <input matInput formControlName="endDate" [matDatepicker]="pickerEnd">
+          <mat-datepicker-toggle matSuffix [for]="pickerEnd" ></mat-datepicker-toggle>
+          <mat-datepicker #pickerEnd ></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer d-flex justify-content-end py-6 px-9">
+    <button type="button" class="btn btn-sm btn-success" [disabled]="jobPositionCreateForm.invalid || (isLoading$ | async)" (click)="saveJobPosition()">
+      <ng-container *ngIf="!(isLoading$ | async)">Kaydet</ng-container>
+      <ng-container *ngIf="isLoading$ | async">
+        <span clas="indicator-progress" [style.display]="'block'">
+          Lütfen bekleyiniz...
+          <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+        </span>
+      </ng-container>
+    </button>
+  </div>
+</form>

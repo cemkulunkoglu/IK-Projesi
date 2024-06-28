@@ -1,0 +1,13 @@
+
+
+<div style="margin: 10px;" class="header">
+  <button class="btn btn-secondary" (click)="previousMonth()">Previous Month</button>
+  <h2>{{ currentDate.value | date: 'MMMM yyyy' }}</h2>
+  <button class="btn btn-secondary" (click)="nextMonth()">Next Month</button>
+</div>
+
+<div class="days">
+  <div *ngFor="let day of daysInMonth" class="day">
+    {{ day.getDate() }}
+  </div>
+</div>

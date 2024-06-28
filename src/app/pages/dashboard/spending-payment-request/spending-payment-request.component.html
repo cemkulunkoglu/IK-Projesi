@@ -1,0 +1,47 @@
+<div class="card h-100">
+  <div class="card-header border-0" style="justify-content: space-between; display: flex; align-items: center;">
+    <div style="order: 1;"></div>
+    <div style="order: 2;">
+      <h3>Harcama Talepleri</h3>
+    </div>
+    <a id="reloadPaymentRequestButton" (click)="leaveReload()" style="order: 3; cursor: grab;">
+      <i class="fa-solid fa-arrows-rotate"></i>
+    </a>
+  </div>
+  <div class="card-body py-2 px-4">
+    <ng-container *ngIf="userData && userData.length > 0; else noRequests">
+      <ng-container *ngFor="let item of userData; let last = last">
+        <div class="d-flex align-items-center">
+          <div class="symbol symbol-50px me-3">
+            <img src="{{ item.profilPicture ? item.profilPicture : './assets/media/avatars/blank.png' }}"
+              alt="Profile Picture" class="img-fluid resized-img">
+          </div>
+          <div class="flex-grow-1">
+            <a href="/user-edit/{{item.userId}}" class="text-gray-900 fw-bold text-hover-primary fs-6">{{
+              item.userNameSurname }}</a>
+          </div>
+          <div>
+            <span class="text-muted d-block fw-bold">
+              {{ item.paymentDate | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+        </div>
+        <div *ngIf="!last" class="separator separator-dashed my-3"></div>
+      </ng-container>
+    </ng-container>
+    <ng-template #noRequests>
+      <div class="text-center text-gray-600 fs-3 py-4">
+        Onayınızı bekleyen bir talep bulunmamaktadır.
+      </div>
+    </ng-template>
+  </div>
+  <div class="card-footer p-5" style="text-align: right;">
+    <span data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-original-title="Edit customer details"
+      data-kt-initialized="1">
+      <a href="/spending-payment-request-panel/" class="btn btn-sm btn-light-primary" data-bs-toggle="modal"
+        data-bs-target="#kt_modal_update_details">
+        Hepsini Göster
+      </a>
+    </span>
+  </div>
+</div>

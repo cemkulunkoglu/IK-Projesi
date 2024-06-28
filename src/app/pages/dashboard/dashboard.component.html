@@ -1,0 +1,74 @@
+<div class="row g-5 g-xl-10 mb-xl-10">
+  <!-- Profil Begin -->
+  <div class="col-xl-4 mb-5">
+    <app-profile></app-profile>
+  </div>
+  <!-- Profil End -->
+
+  <!-- Yaklaşan Etkinlik Begin -->
+  <div class="col-xl-4 mb-5" *ngIf="isEmployee() || isManager() || isSystemAdministrator()">
+    <app-event-calendar></app-event-calendar>
+  </div>
+  <!-- Yaklaşan Etkinlik End -->
+
+  <!-- Çalışan Dağılımı Begin -->
+  <div class="col-xl-4 mb-5" *ngIf="isEmployee() || isManager() || isSystemAdministrator()">
+    <app-user-distribution-chart></app-user-distribution-chart>
+  </div>
+  <!-- Çalışan Dağılımı End -->
+
+  <!-- Resmi Tatiller Begin -->
+  <div class="col-xl-4 mb-5" *ngIf="isManager() || isSystemAdministrator()">
+    <app-holiday-day></app-holiday-day>
+  </div>
+  <!-- Resmi Tatiller End -->
+
+  <!-- Yaklaşan Doğum Günleri Begin -->
+  <div class="col-xl-4 mb-5" *ngIf="isEmployee() || isManager() || isSystemAdministrator()">
+    <app-user-birthday (userBirthday)="isUserBirthday($event)"></app-user-birthday>
+  </div>
+  <!-- Yaklaşan Doğum Günleri End -->
+
+  <!-- İzin Bilgilerim Begin -->
+  <div class="col-xl-4 mb-5" *ngIf="isEmployee() || isManager() || isSystemAdministrator()">
+    <app-leave-information></app-leave-information>
+  </div>
+  <!-- İzin Bilgilerim End -->
+
+  <!-- Yaklaşan İzinler Begin -->
+  <div class="col-xl-4 mb-5" *ngIf="isEmployee() || isManager() || isSystemAdministrator()">
+    <app-dashboard-leave (dashboardLeave)="isDashboardLeave($event)"></app-dashboard-leave>
+  </div>
+  <!-- Yaklaşan İzinler End -->
+
+  <!-- Harcama Talepleri Begin -->
+  <div class="col-xl-4 mb-5" *ngIf="isManager() || isSystemAdministrator()">
+    <app-spending-payment-request></app-spending-payment-request>
+  </div>
+  <!-- Harcama Talepleri End -->
+
+  <!-- Onay Bekleyen Begin -->
+  <div class="col-xl-4 mb-5" *ngIf="isManager() || isSystemAdministrator()">
+    <app-awaiting-leave-request></app-awaiting-leave-request>
+  </div>
+  <!-- Onay Bekleyen End -->
+
+  <!-- Avans Talepleri Begin -->
+  <div class="col-xl-4 mb-5" *ngIf="isManager() || isSystemAdministrator()">
+    <app-awaiting-payment-request
+      (awaitingPaymentRequest)="isAwaitingPaymentRequest($event)"></app-awaiting-payment-request>
+  </div>
+  <!-- Avans Talepleri End -->
+
+  <!-- Mesai Ücreti Talepleri Begin -->
+  <div class="col-xl-4 mb-5" *ngIf="isManager() || isSystemAdministrator()">
+    <app-overtime-payment-request></app-overtime-payment-request>
+  </div>
+  <!-- Mesai Ücreti Talepleri End -->
+
+  <!-- Vize Belgesi Talepleri Begin -->
+  <div class="col-xl-4 mb-5" *ngIf="isManager() || isSystemAdministrator()">
+    <app-visa-document-request></app-visa-document-request>
+  </div>
+  <!-- Vize Belgesi Talepleri End -->
+</div>

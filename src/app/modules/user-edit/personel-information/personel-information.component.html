@@ -1,0 +1,176 @@
+<div class="card mb-5 mb-xl-12" id="kt_profile_details_view">
+  <form novalidate="novalidate" [formGroup]="savePersonelInformationForm" class="form col-lg-12 mx-auto">
+    <input type="text" matInput name="userId" formControlName="userId" hidden>
+    <div class="card-body p-9">
+      <div class="row">
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Uyruğu</mat-label>
+            <mat-select formControlName="nationalityId" [(ngModel)]="selectedNationalityId"
+              [(value)]="selectedNationality">
+              <mat-option>
+                <ngx-mat-select-search [formControl]="nationalitySearch" placeholderLabel="Listede ara..."
+                  noEntriesFoundLabel="Sonuç bulunamadı">
+                  <mat-icon ngxMatSelectSearchClear>
+                    <span class="svg-icon svg-icon-5" [inlineSVG]="'./assets/media/icons/arrows/arr061.svg'"></span>
+                  </mat-icon>
+                </ngx-mat-select-search>
+              </mat-option>
+              <mat-option *ngFor="let item of nationalityFilteredData | async" [value]="item.id">{{item.code}} -
+                {{item.name}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="savePersonelInformationForm.get('nationalityId')">Ülke Seçiniz</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3 mb-5 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>T.C Numarası</mat-label>
+            <input type="text" matInput name="identityNumber" formControlName="identityNumber" maxlength="11"
+              [readonly]="!hasPermission('employee-identity-number-update')">
+            <mat-error *ngIf="savePersonelInformationForm.controls['identityNumber']">T.C Numarası 11 haneli olmalı ve
+              sadece rakam girilmeli!!</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Doğum Tarihi</mat-label>
+            <input matInput formControlName="dateOfBirth" [matDatepicker]="pickerBirth"
+              [disabled]="!hasPermission('employee-birthday-update')">
+            <mat-datepicker-toggle matSuffix [for]="pickerBirth"></mat-datepicker-toggle>
+            <mat-datepicker #pickerBirth></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Cinsiyet</mat-label>
+            <mat-select formControlName="gender">
+              <mat-option *ngFor="let item of genderSources" [value]="item"
+                [disabled]="!hasPermission('employee-gender-update')">{{genderLabelMapping[item]}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="savePersonelInformationForm.get('gender')">Cinsiyet</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-4">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Medeni Durum</mat-label>
+            <mat-select formControlName="maritalStatus">
+              <mat-option *ngFor="let item of maritalStatusSources"
+                [disabled]="!hasPermission('employee-marital-status-update')"
+                [value]="item">{{maritalStatusLabelMapping[item]}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="savePersonelInformationForm.get('maritalStatus')">Medeni Durum</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-4">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Eş Çalışma Durumu</mat-label>
+            <mat-select formControlName="spousesEmploymentStatus">
+              <mat-option value="" [disabled]="!hasPermission('employee-spouse-working-status-update')">Yok</mat-option>
+              <mat-option *ngFor="let item of spousesEmploymentStatusSources"
+                [disabled]="!hasPermission('employee-spouse-working-status-update')"
+                [value]="item">{{spousesEmploymentStatusLabelMapping[item]}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="savePersonelInformationForm.get('spousesEmploymentStatus').hasError('required')">Eş
+              Çalışma Durumu</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-4 mb-5 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Çocuk Sayısı</mat-label>
+            <input type="number" matInput name="numberOfChildren" formControlName="numberOfChildren"
+              [readonly]="!hasPermission('employee-children-count-update')">
+            <mat-error *ngIf="savePersonelInformationForm.controls['numberOfChildren']">Çocuk Sayısı</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Kan Grubu</mat-label>
+            <mat-select formControlName="bloodType">
+              <mat-option *ngFor="let item of bloodTypeSources"
+                [disabled]="!hasPermission('employee-blood-type-update')"
+                [value]="item">{{bloodTypeLabelMapping[item]}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="savePersonelInformationForm.get('bloodType')">Kan Grubu</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Engel Derecesi</mat-label>
+            <mat-select formControlName="obstacleDegree">
+              <mat-option value="" [disabled]="!hasPermission('employee-disability-degree-update')">Yok</mat-option>
+              <mat-option *ngFor="let item of obstacleDegreeSources"
+                [disabled]="!hasPermission('employee-disability-degree-update')"
+                [value]="item">{{obstacleDegreeLabelMapping[item]}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="savePersonelInformationForm.get('obstacleDegree')">Engel Derecesi</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Eğitim Durumu</mat-label>
+            <mat-select formControlName="educationStatus">
+              <mat-option *ngFor="let item of educationStatusSources"
+                [disabled]="!hasPermission('employee-education-status-update')"
+                [value]="item">{{educationStatusLabelMapping[item]}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="savePersonelInformationForm.get('educationStatus')">Eğitim Durumu</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Tamamlanan En Yüksek Eğitim Seviyesi</mat-label>
+            <mat-select formControlName="highestLevelOfEducationCompleted">
+              <mat-option *ngFor="let item of educationStatusSources"
+                [disabled]="!hasPermission('employee-education-level-update')"
+                [value]="item">{{educationStatusLabelMapping[item]}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="savePersonelInformationForm.get('highestLevelOfEducationCompleted')">Tamamlanan En Yüksek
+              Eğitim Seviyesi</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 mb-5 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Son Tamamlanan Eğitim Kurumu</mat-label>
+            <input type="text" matInput name="lastCompletedEducationalInstitution"
+              formControlName="lastCompletedEducationalInstitution"
+              [readonly]="!hasPermission('employee-last-completed-education-institution-update')">
+            <mat-error *ngIf="savePersonelInformationForm.controls['lastCompletedEducationalInstitution']">Son
+              Tamamlanan Eğitim Kurumu</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Askerlik Durumu</mat-label>
+            <mat-select formControlName="militaryStatus" [(ngModel)]="selectedMilitaryStatus">
+              <mat-option *ngFor="let item of militaryStatusSources" [value]="item"
+                [disabled]="!hasPermission('employee-military-service-status-update')"
+                (click)="onChangeMilitaryStatus()">{{militaryStatusLabelMapping[item]}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="savePersonelInformationForm.get('militaryStatus')">Askerlik Durumu</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Askerlik Tecil Tarihi</mat-label>
+            <input matInput formControlName="militaryPostponementDate" [matDatepicker]="pickerMilitary"
+              [disabled]="!hasPermission('employee-military-delay-update') || !isMilitaryPostponementDate">
+            <mat-datepicker-toggle matSuffix [for]="pickerMilitary"></mat-datepicker-toggle>
+            <mat-datepicker #pickerMilitary></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end py-6 px-9">
+      <button type="button" class="btn btn-sm btn-success"
+        [disabled]="savePersonelInformationForm.invalid || (isLoading$ | async)" (click)="savePersonelInformation()">
+        <ng-container *ngIf="!(isLoading$ | async)">Kaydet</ng-container>
+        <ng-container *ngIf="isLoading$ | async">
+          <span class="indicator-progress" [style.display]="'block'">
+            Lütfen bekleyiniz...
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+          </span>
+        </ng-container>
+      </button>
+    </div>
+  </form>
+</div>

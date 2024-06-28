@@ -1,0 +1,154 @@
+<div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+    <div class="card-header">
+        <div class="w-100 card-title m-0">
+            <h3 class="w-100 fw-bolder m-0">Onay Süreçleri</h3>
+            <div class="w-100 d-flex justify-content-end">
+                <button class="btn btn-sm main-btn" (click)="openProcessAddModal()" [disabled]="!hasCreatePermission">
+                    Onay Süreci Ekle
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div *ngIf="approvalProcesses.length > 0; else noData">
+            <div *ngFor="let process of approvalProcesses" class="approval-process-card card mb-5 mb-xl-10">
+                <div class="card-header">
+                    <div class="w-100 card-title m-0 d-flex justify-content-between align-items-center">
+                        <h4 class="m-0">{{ process.name }}</h4>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-warning me-3"
+                                (click)="openProcessEditModal(process)" [disabled]="!hasUpdatePermission">
+                                Düzenle
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger" [disabled]="!hasDeletePermission"
+                                (click)="deleteApprovalProcess(process)">
+                                Sil
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="d-flex flex-wrap align-items-center p-0 list-unstyled">
+                        <ng-container *ngFor="let user of process.approvalProcessUsers; let i = index">
+                            <li class="d-flex align-items-center my-3 me-3 approval-process-user position-relative">
+                                <span
+                                    class="position-absolute top-0 start-0 translate-middle badge badge-circle badge-primary">
+                                    {{ user.order }}
+                                </span>
+                                <span>{{ user.userFullName }}</span>
+                            </li>
+                            <ng-container *ngIf="i < process.approvalProcessUsers.length - 1">
+                                <li class="d-flex align-items-center">
+                                    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" class="mx-2">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                        </g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <path
+                                                d="M9.71069 18.2929C10.1012 18.6834 10.7344 18.6834 11.1249 18.2929L16.0123 13.4006C16.7927 12.6195 16.7924 11.3537 16.0117 10.5729L11.1213 5.68254C10.7308 5.29202 10.0976 5.29202 9.70708 5.68254C9.31655 6.07307 9.31655 6.70623 9.70708 7.09676L13.8927 11.2824C14.2833 11.6729 14.2833 12.3061 13.8927 12.6966L9.71069 16.8787C9.32016 17.2692 9.32016 17.9023 9.71069 18.2929Z"
+                                                fill="#004585"></path>
+                                        </g>
+                                    </svg>
+                                </li>
+                            </ng-container>
+                        </ng-container>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #noData>
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h3 class="card-title">Onay Süreçleri</h3>
+        </div>
+        <div class="card-body">
+            <p>Hiç onay süreci bulunamadı.</p>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #processModal let-modal>
+    <form [formGroup]="processForm" (ngSubmit)="submitForm()">
+        <div class="modal-header">
+            <h5 class="modal-title">{{ isEditMode ? 'Onay Sürecini Düzenle' : 'Yeni Onay Süreci Ekle' }}</h5>
+            <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Onay Süreci Adı</mat-label>
+                        <input matInput formControlName="name" required>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-12">
+                    <div id="kt_docs_repeater_basic">
+                        <div class="form-group">
+                            <div formArrayName="approvalProcessUsers">
+                                <div
+                                    *ngFor="let user of processForm.get('approvalProcessUsers')['controls']; let i = index">
+                                    <div [formGroupName]="i" class="form-group row">
+                                        <div class="col-lg-2">
+                                            <mat-form-field class="example-full-width" appearance="fill">
+                                                <mat-label>Sıra</mat-label>
+                                                <input matInput formControlName="order" type="number" required>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-lg-9">
+                                            <mat-form-field class="example-full-width" appearance="fill">
+                                                <mat-label>Kullanıcı</mat-label>
+                                                <mat-select formControlName="userId" required>
+                                                    <mat-option>
+                                                        <ngx-mat-select-search [formControl]="managerSearch"
+                                                            placeholderLabel="Listede ara..."
+                                                            noEntriesFoundLabel="Sonuç bulunamadı">
+                                                            <mat-icon ngxMatSelectSearchClear>
+                                                                <span class="svg-icon svg-icon-5"
+                                                                    [inlineSVG]="'./assets/media/icons/arrows/arr061.svg'"></span>
+                                                            </mat-icon>
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option *ngFor="let user of filteredUsers | async"
+                                                        [value]="user.id">
+                                                        {{ user.name + ' ' + user.surname }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-lg-1">
+                                            <a (click)="removeUser(i)"
+                                                class="btn btn-icon btn-bg-light btn-active-color-danger me-1"
+                                                title="Sil">
+                                                <span class="svg-icon svg-icon-2"
+                                                    [inlineSVG]="'./assets/media/icons/duotune/arrows/arr011.svg'"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-end mt-3">
+                            <button type="button" class="btn btn-sm btn-light-info" (click)="addUser()">
+                                + Kullanıcı Ekle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="separator my-5"></div>
+                <div class="col-lg-12">
+                    <mat-checkbox formControlName="isDefaultProcess">Varsayılan Onay Süreci</mat-checkbox>
+                </div>
+                <div class="col-lg-12">
+                    <mat-checkbox formControlName="showApprovalOrder">Onay Sırasını Göster</mat-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-sm btn-light" type="button" (click)="closeModal()">Kapat</button>
+            <button class="btn btn-sm btn-primary" type="submit">{{ isEditMode ? 'Güncelle' : 'Kaydet' }}</button>
+        </div>
+    </form>
+</ng-template>

@@ -1,0 +1,89 @@
+<div *ngIf="hasListPermission">
+    <div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+        <div class="card-header">
+            <div class="w-100 card-title m-0">
+                <h3 class="w-100 fw-bolder m-0">İzin Kategori Listesi</h3>
+                <div class="w-100 d-flex justify-content-end">
+                    <button class="btn btn-sm main-btn" (click)="openLeaveTypeAddModal()"
+                        [disabled]="!hasCreatePermission">
+                        İzin Kategorisi Ekle
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-9">
+            <dx-data-grid id="gridContainer" [dataSource]="dataSource" [columnAutoWidth]="true" [showRowLines]="true"
+                [showColumnLines]="true" [showBorders]="true">
+
+                <dxo-paging [pageSize]="25"></dxo-paging>
+                <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[25, 50, 100]"></dxo-pager>
+                <dxo-filter-row [visible]="true"></dxo-filter-row>
+                <dxo-header-filter [visible]="true"></dxo-header-filter>
+                <dxo-search-panel [visible]="true" [highlightCaseSensitive]="true"></dxo-search-panel>
+                <dxo-group-panel [visible]="true"></dxo-group-panel>
+
+                <dxi-column dataField="name" dataType="string" caption="İzin Adı"></dxi-column>
+                <dxi-column dataField="description" dataType="string" caption="Açıklama"></dxi-column>
+                <dxi-column dataField="isFree" dataType="boolean" caption="Ücretli"></dxi-column>
+                <dxi-column dataField="day" dataType="number" caption="İzin Süresi"></dxi-column>
+                <dxi-column type="buttons" [width]="110" [fixed]="true" caption="İşlemler"
+                    cellTemplate="cellBtnTemplate"></dxi-column>
+
+                <div *dxTemplate="let data of 'cellBtnTemplate'">
+                    <button class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1" title="Düzenle"
+                        (click)="openLeaveTypeEditModal(data)" [disabled]="!hasUpdatePermission">
+                        <span class="svg-icon svg-icon-2"
+                            [inlineSVG]="'./assets/media/icons/duotune/general/gen055.svg'"></span>
+                    </button>
+                    <button title="İzin Kategorisini Sil"
+                        class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm me-2"
+                        (click)="deleteLeaveType(data)" [disabled]="!hasDeletePermission">
+                        <span class="svg-icon svg-icon-5"
+                            [inlineSVG]="'./assets/media/icons/duotune/general/gen027.svg'"></span>
+                    </button>
+                </div>
+            </dx-data-grid>
+        </div>
+    </div>
+</div>
+
+<ng-template #leaveTypeModal let-modal>
+    <form [formGroup]="leaveTypeForm" (ngSubmit)="submitForm()">
+        <div class="modal-header">
+            <h5 class="modal-title">{{ isEditMode ? 'İzin Kategorisini Düzenle' : 'Yeni İzin Kategorisi Ekle' }}</h5>
+            <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>İzin Adı</mat-label>
+                        <input matInput formControlName="name" required>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-6">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>İzin Süresi (Gün)</mat-label>
+                        <input matInput type="number" formControlName="day" required>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-12">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Açıklama</mat-label>
+                        <textarea matInput formControlName="description" required></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-12">
+                    <mat-checkbox formControlName="isFree" id="flexCheckDefault">
+                        Ücretli
+                    </mat-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-sm btn-light" type="button" (click)="closeModal()">Kapat</button>
+            <button class="btn btn-sm btn-primary" type="submit" [disabled]="!leaveTypeForm.valid">{{ isEditMode ?
+                'Güncelle' : 'Kaydet' }}</button>
+        </div>
+    </form>
+</ng-template>

@@ -1,0 +1,50 @@
+<div class="card">
+  <div class="card-header card-header-stretch">
+    <!--begin::Title-->
+    <div class="card-title d-flex align-items-center">
+      <i class="ki-duotone ki-calendar-8 fs-1 text-primary me-3 lh-0"><span class="path1"></span><span
+          class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span
+          class="path6"></span></i>
+
+      <h3 class="fw-bold m-0 text-gray-800">{{ getContent(activeTab) }}</h3>
+    </div>
+    <!--end::Titles-->
+
+    <!--begin::Toolbar-->
+    <div class="card-toolbar m-0">
+      <!--begin::Tab nav-->
+
+      <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold">
+        <li class="nav-item mt-2" (click)="showTab('payment-group')" [class.active]="activeTab === 'payment-group'">
+          <a role="tab" class="nav-link cursor-pointer me-6" [class.text-active-primary]="activeTab === 'payment-group'"
+            [class.active]="activeTab === 'payment-group'"> Harcamalar </a>
+        </li>
+        <li class="nav-item mt-2" (click)="showTab('overtime')" [class.active]="activeTab === 'overtime'">
+          <a role="tab" class="nav-link cursor-pointer me-6" [class.text-active-primary]="activeTab === 'overtime'"
+            [class.active]="activeTab === 'overtime'"> Fazla Mesailer </a>
+        </li>
+        <li class="nav-item mt-2" (click)="showTab('additionalPayment')"
+          [class.active]="activeTab === 'additionalPayment'">
+          <a role="tab" class="nav-link cursor-pointer me-6"
+            [class.text-active-primary]="activeTab === 'additionalPayment'"
+            [class.active]="activeTab === 'additionalPayment'"> Ek Ödemeler </a>
+        </li>
+        <li class="nav-item mt-2" (click)="showTab('specialDeduction')"
+          [class.active]="activeTab === 'specialDeduction'">
+          <a role="tab" class="nav-link cursor-pointer me-6"
+            [class.text-active-primary]="activeTab === 'specialDeduction'"
+            [class.active]="activeTab === 'specialDeduction'"> Özel Kesintiler </a>
+        </li>
+      </ul>
+
+      <!--end::Tab nav-->
+    </div>
+    <!--end::Toolbar-->
+  </div>
+  <div class="card-body">
+    <app-spending *ngIf="activeTab === 'payment-group'" [userId]="userId"></app-spending>
+    <app-overtime-button *ngIf="activeTab === 'overtime'" [userId]="userId"></app-overtime-button>
+    <app-additional-payment *ngIf="activeTab === 'additionalPayment'"></app-additional-payment>
+    <app-special-deduction *ngIf="activeTab === 'specialDeduction'"></app-special-deduction>
+  </div>
+</div>

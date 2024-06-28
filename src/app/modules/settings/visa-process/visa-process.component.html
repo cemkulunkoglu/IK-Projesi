@@ -1,0 +1,217 @@
+<div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+    <div class="card-header">
+        <div class="w-100 card-title m-0">
+            <h3 class="w-100 fw-bolder m-0">Vize Süreçleri</h3>
+            <div class="w-100 d-flex justify-content-end">
+                <button class="btn btn-sm main-btn" (click)="openProcessAddModal()" [disabled]="!hasCreatePermission">
+                    Vize Süreci Ekle
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div *ngIf="visaProcesses.length > 0; else noData">
+            <div *ngFor="let process of visaProcesses" class="visa-process-card card mb-5 mb-xl-10">
+                <div class="card-header">
+                    <div class="w-100 card-title m-0 d-flex justify-content-between align-items-center">
+                        <h4 class="m-0">{{ process.name }}</h4>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-warning me-3"
+                                (click)="openProcessEditModal(process)" [disabled]="!hasUpdatePermission">
+                                Düzenle
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger" (click)="deleteVisaProcess(process)"
+                                [disabled]="!hasDeletePermission">
+                                Sil
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="d-flex flex-wrap align-items-center p-0 list-unstyled">
+                        <ng-container *ngFor="let document of process.visaProcessDocuments; let i = index">
+                            <li class="d-flex align-items-center my-3 me-3 visa-process-document position-relative">
+                                <span
+                                    class="position-absolute top-0 start-0 translate-middle badge badge-circle badge-primary">
+                                    {{ document.order }}
+                                </span>
+                                <a class="visa-document-link" [href]="document.path" target="_blank">{{ document.name
+                                    }}</a>
+                            </li>
+                            <ng-container *ngIf="i < process.visaProcessDocuments.length - 1">
+                                <li class="d-flex align-items-center">
+                                    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" class="mx-2">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                        </g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <path
+                                                d="M9.71069 18.2929C10.1012 18.6834 10.7344 18.6834 11.1249 18.2929L16.0123 13.4006C16.7927 12.6195 16.7924 11.3537 16.0117 10.5729L11.1213 5.68254C10.7308 5.29202 10.0976 5.29202 9.70708 5.68254C9.31655 6.07307 9.31655 6.70623 9.70708 7.09676L13.8927 11.2824C14.2833 11.6729 14.2833 12.3061 13.8927 12.6966L9.71069 16.8787C9.32016 17.2692 9.32016 17.9023 9.71069 18.2929Z"
+                                                fill="#004585"></path>
+                                        </g>
+                                    </svg>
+                                </li>
+                            </ng-container>
+                        </ng-container>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #noData>
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h3 class="card-title">Vize Süreçleri</h3>
+        </div>
+        <div class="card-body">
+            <p>Hiç vize süreci bulunamadı.</p>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #processModal let-modal>
+    <form [formGroup]="processForm" (ngSubmit)="submitForm()">
+        <div class="modal-header">
+            <h5 class="modal-title">{{ isEditMode ? 'Vize Sürecini Düzenle' : 'Yeni Vize Süreci Ekle' }}</h5>
+            <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Vize Süreci Adı</mat-label>
+                        <input matInput formControlName="name" required>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-12">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Açıklama</mat-label>
+                        <textarea matInput formControlName="description" required></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-12 mb-5">
+                    <div id="kt_docs_repeater_basic">
+                        <div class="form-group">
+                            <div formArrayName="visaProcessDocuments">
+                                <div
+                                    *ngFor="let document of processForm.get('visaProcessDocuments')['controls']; let i = index">
+                                    <div [formGroupName]="i" class="form-group row mb-5">
+                                        <div class="col-lg-2">
+                                            <mat-form-field class="example-full-width" appearance="fill">
+                                                <mat-label>Sıra</mat-label>
+                                                <input matInput formControlName="order" type="number" required readonly>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-lg-9">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <mat-form-field class="example-full-width" appearance="fill">
+                                                        <mat-label>Döküman Adı</mat-label>
+                                                        <input matInput formControlName="name" required>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <mat-form-field class=" example-full-width" appearance="fill">
+                                                        <mat-label>Döküman Açıklaması</mat-label>
+                                                        <textarea matInput formControlName="description"
+                                                            required></textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="file-upload-container" appDnd
+                                                    (fileDropped)="onFileSelected($event, i)" style="padding: 1rem;">
+                                                    <input type="file" formControlName="document" #fileDropRef
+                                                        id="fileDropRef" (change)="onFileSelected($event, i)" />
+                                                    <svg width="32px" viewBox="0 0 24 24" version="1.1"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000">
+                                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                            stroke-linejoin="round"></g>
+                                                        <g id="SVGRepo_iconCarrier">
+                                                            <title>Upload-1</title>
+                                                            <g id="Page-1" stroke="none" stroke-width="1" fill="none"
+                                                                fill-rule="evenodd">
+                                                                <g id="Upload-1">
+                                                                    <rect id="Rectangle" fill-rule="nonzero" x="0" y="0"
+                                                                        width="24" height="24"> </rect>
+                                                                    <line x1="12" y1="11" x2="12" y2="20" id="Path"
+                                                                        stroke="#0C0310" stroke-width="2"
+                                                                        stroke-linecap="round"> </line>
+                                                                    <path
+                                                                        d="M15,13 L12.7071,10.7071 C12.3166,10.3166 11.6834,10.3166 11.2929,10.7071 L9,13"
+                                                                        id="Path" stroke="#0C0310" stroke-width="2"
+                                                                        stroke-linecap="round"> </path>
+                                                                    <path
+                                                                        d="M8,16 L6,16 C4.34315,16 3,14.6569 3,13 C3,11.3431 4.34315,10 6,10 C6,6.68629 8.68629,4 12,4 C15.3137,4 18,6.68629 18,10 C19.6569,10 21,11.3431 21,13 C21,14.6569 19.6569,16 18,16 L16,16"
+                                                                        id="Path" stroke="#0C0310" stroke-width="2"
+                                                                        stroke-linecap="round"> </path>
+                                                                </g>
+                                                            </g>
+                                                        </g>
+                                                    </svg>
+                                                    <h3>Dosyayı Buradan Yükleyin</h3>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="files-list">
+                                                    <div class="single-file" *ngIf="uploadedFiles[i]">
+                                                        <div class="info">
+                                                            <div class="row sm-gutters">
+                                                                <div class="col-auto align-self-center">
+                                                                    <div class="file-icon">
+                                                                        <mat-icon>attachment</mat-icon>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col align-self-center">
+                                                                    <h4 class="name">
+                                                                        {{ uploadedFiles[i].name }}
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="col-auto align-self-center text-right">
+                                                                    <div class="row sm-gutters">
+                                                                        <div class="col-auto align-self-center">
+                                                                            <div class="delete"
+                                                                                (click)="removeUploadedFile(i)">
+                                                                                <mat-icon>delete_forever</mat-icon>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-1">
+                                            <button (click)="removeDocument(i)"
+                                                [disabled]="!hasDeleteDocumentPermission"
+                                                class="btn btn-icon btn-bg-light btn-active-color-danger me-1"
+                                                title="Sil">
+                                                <span class="svg-icon svg-icon-2"
+                                                    [inlineSVG]="'./assets/media/icons/duotune/arrows/arr011.svg'"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-end mt-3">
+                            <button type="button" class="btn btn-sm btn-light-info" (click)="addDocument()">
+                                + Döküman Ekle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-sm btn-light" type="button" (click)="closeModal()">Kapat</button>
+            <button class="btn btn-sm btn-primary" type="submit">{{ isEditMode ? 'Güncelle' : 'Kaydet' }}</button>
+        </div>
+    </form>
+</ng-template>

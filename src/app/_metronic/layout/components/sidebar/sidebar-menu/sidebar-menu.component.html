@@ -1,0 +1,136 @@
+<!--begin::Menu wrapper-->
+<div id="kt_app_sidebar_menu_wrapper" class="app-sidebar-wrapper hover-scroll-overlay-y my-5" data-kt-scroll="true"
+  data-kt-scroll-activate="true" data-kt-scroll-height="auto"
+  data-kt-scroll-dependencies="#kt_app_sidebar_logo, #kt_app_sidebar_footer"
+  data-kt-scroll-wrappers="#kt_app_sidebar_menu" data-kt-scroll-offset="5px" data-kt-scroll-save-state="true">
+  <!--begin::Menu-->
+  <div class="menu menu-column menu-rounded menu-sub-indention px-3" id="#kt_app_sidebar_menu" data-kt-menu="true"
+    data-kt-menu-expand="false">
+
+    <!-- Talep -->
+    <div class="menu-item menu-accordion" data-kt-menu-trigger="click" routerLinkActive="here show">
+      <span class="menu-link"><span class="menu-icon"><span class="svg-icon svg-icon-2"
+            [inlineSVG]="'./assets/media/icons/duotune/general/gen022.svg'"></span></span><span
+          class="menu-title">Talep</span><span class="menu-arrow"></span></span>
+      <div class="menu-sub menu-sub-accordion" routerLinkActive="menu-active-bg">
+        <div class="menu-item" routerLinkActive="here show" data-kt-menu-trigger="click">
+          <span class="menu-link"><span class="menu-bullet"><span class="bullet bullet-dot"></span></span><span
+              class="menu-title" routerLink="/sidebar-leave">İzin</span></span>
+        </div>
+        <div class="menu-item" routerLinkActive="here show" data-kt-menu-trigger="click">
+          <span class="menu-link"><span class="menu-bullet"><span class="bullet bullet-dot"></span></span><span
+              class="menu-title" routerLink="/sidebar-advance-payment">Avans</span></span>
+        </div>
+        <div class="menu-item" routerLinkActive="here show" data-kt-menu-trigger="click">
+          <span class="menu-link"><span class="menu-bullet"><span class="bullet bullet-dot"></span></span><span
+              class="menu-title" [routerLink]="['/sidebar-spending-payment', currentUser.id]">Harcama</span></span>
+        </div>
+        <div class="menu-item" routerLinkActive="here show" data-kt-menu-trigger="click">
+          <span class="menu-link"><span class="menu-bullet"><span class="bullet bullet-dot"></span></span><span
+              class="menu-title" [routerLink]="['/sidebar-overtime-payment', currentUser.id]">Fazla Mesai</span></span>
+        </div>
+        <div class="menu-item" routerLinkActive="here show" data-kt-menu-trigger="click">
+          <span class="menu-link"><span class="menu-bullet"><span class="bullet bullet-dot"></span></span><span
+              class="menu-title" routerLink="/sidebar-document-request">Vize Belgesi</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ana Sayfa -->
+    <div class="menu-item">
+      <a class="menu-link without-sub" routerLink="/dashboard" routerLinkActive="active"><span class="menu-icon">
+          <span [inlineSVG]="'./assets/media/icons/duotune/general/gen019.svg'" class="svg-icon svg-icon-2"></span>
+        </span><span class="menu-title">Ana Sayfa</span></a>
+    </div>
+
+    <!-- Çalışanlar -->
+    <div class="menu-item" *ngIf="isSystemAdministrator() || hasEmployeeListPermission">
+      <a class="menu-link without-sub" routerLink="/users" routerLinkActive="active"><span class="menu-icon">
+          <span [inlineSVG]="'./assets/media/icons/duotune/general/gen019.svg'" class="svg-icon svg-icon-2"></span>
+        </span><span class="menu-title">Çalışanlar</span></a>
+    </div>
+    <!-- İzinler -->
+    <div class="menu-item" *ngIf="isSystemAdministrator()">
+      <a class="menu-link without-sub" routerLink="/leave-information" routerLinkActive="active"><span
+          class="menu-icon">
+          <span [inlineSVG]="'./assets/media/icons/duotune/general/gen019.svg'" class="svg-icon svg-icon-2"></span>
+        </span><span class="menu-title">İzinler</span></a>
+    </div>
+    <!-- Harcamalar -->
+    <div class="menu-item" *ngIf="isManager() || isSystemAdministrator()">
+      <a class="menu-link without-sub" routerLink="/spending-information" routerLinkActive="active"><span
+          class="menu-icon">
+          <span [inlineSVG]="'./assets/media/icons/duotune/general/gen019.svg'" class="svg-icon svg-icon-2"></span>
+        </span><span class="menu-title">Harcamalar</span></a>
+    </div>
+    <!-- Takvim -->
+    <div class="menu-item" *ngIf="isManager() || isSystemAdministrator()">
+      <a class="menu-link without-sub" routerLink="/calendar" routerLinkActive="active"><span class="menu-icon">
+          <span [inlineSVG]="'./assets/media/icons/duotune/general/gen019.svg'" class="svg-icon svg-icon-2"></span>
+        </span><span class="menu-title">Takvim</span></a>
+    </div>
+
+    <!-- Ayarlar -->
+    <div class="menu-item menu-accordion" data-kt-menu-trigger="click" routerLinkActive="here show"
+      *ngIf="canViewSettings()">
+      <span class="menu-link"><span class="menu-icon"><span class="svg-icon svg-icon-2"
+            [inlineSVG]="'./assets/media/icons/duotune/communication/com006.svg'"></span></span><span class="menu-title"
+          data-link="/crafted/account">Ayarlar</span><span class="menu-arrow"></span></span>
+      <div class="menu-sub menu-sub-accordion" routerLinkActive="menu-active-bg">
+        <div class="menu-item" *ngIf="isSystemAdministrator()">
+          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/settings/system-settings"><span
+              class="menu-bullet"><span class="bullet bullet-dot"></span></span><span class="menu-title">Sistem
+              Ayarları</span></a>
+        </div>
+        <div class="menu-item" *ngIf="isSystemAdministrator() || hasApprovalProcessPermission">
+          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/settings/approval-process"><span
+              class="menu-bullet"><span class="bullet bullet-dot"></span></span><span class="menu-title">Onay
+              Süreçleri</span></a>
+        </div>
+        <div class="menu-item" *ngIf="isSystemAdministrator() || hasVisaDocumentProcessPermission">
+          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/settings/visa-process"><span
+              class="menu-bullet"><span class="bullet bullet-dot"></span></span><span class="menu-title">Vize Belgesi
+              Süreçleri</span></a>
+        </div>
+        <div class="menu-item" *ngIf="isSystemAdministrator() || hasCompanyInfoPermission">
+          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/settings/company-info"><span
+              class="menu-bullet"><span class="bullet bullet-dot"></span></span><span class="menu-title">Şirket
+              Bilgileri</span></a>
+        </div>
+        <div class="menu-item">
+          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/settings/educations"><span
+              class="menu-bullet"><span class="bullet bullet-dot"></span></span><span
+              class="menu-title">Eğitimler</span></a>
+        </div>
+        <div class="menu-item" *ngIf="isSystemAdministrator() || hasEmbezzlementCategoryPermission">
+          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/settings/embezzlement-category"><span
+              class="menu-bullet"><span class="bullet bullet-dot"></span></span><span class="menu-title">Zimmet
+              Kategorisi</span></a>
+        </div>
+        <div class="menu-item" *ngIf="isSystemAdministrator() || hasDocumentTypePermission">
+          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/settings/document-type"><span
+              class="menu-bullet"><span class="bullet bullet-dot"></span></span><span class="menu-title">Evrak
+              Tipi</span></a>
+        </div>
+        <div class="menu-item" *ngIf="isSystemAdministrator() || hasLeaveTypePermission">
+          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/settings/leave-type"><span
+              class="menu-bullet"><span class="bullet bullet-dot"></span></span><span class="menu-title">İzin
+              Tipi</span></a>
+        </div>
+        <div class="menu-item">
+          <a class="menu-link without-sub" routerLinkActive="active"
+            routerLink="/settings/leaving-job-reason-category"><span class="menu-bullet"><span
+                class="bullet bullet-dot"></span></span><span class="menu-title">İşten Ayrılma Nedenleri</span></a>
+        </div>
+        <div class="menu-item" *ngIf="isSystemAdministrator() || hasOfficialHolidayPermission">
+          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/settings/official-holidays"><span
+              class="menu-bullet"><span class="bullet bullet-dot"></span></span><span class="menu-title">Tatil
+              Takvimleri</span></a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!--end::Menu-->
+</div>
+<!--end::Menu wrapper-->

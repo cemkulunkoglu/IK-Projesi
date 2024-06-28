@@ -1,0 +1,46 @@
+<div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+    <form novalidate="novalidate" [formGroup]="securitySettingsForm" class="form col-lg-12 mx-auto">
+        <input type="text" matInput name="id" formControlName="id" hidden>
+        <div class="card-body p-9">
+            <div class="row">
+                <div class="col-lg-12 fv-row">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Minimum Şifre Uzunluğu</mat-label>
+                        <input matInput type="number" formControlName="minPasswordLength">
+                        <mat-error *ngIf="securitySettingsForm.controls['minPasswordLength'].hasError('required')">
+                            Minimum Şifre Uzunluğu <strong>zorunludur</strong>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <mat-checkbox formControlName="logoutWhenBrowserClosed">Tarayıcı kapatıldığında çıkış
+                        yap</mat-checkbox>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <mat-checkbox formControlName="logoutAfterTenMinutes">10 dakika sonra çıkış yap</mat-checkbox>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <mat-checkbox formControlName="lowerAndUpperCaseRequired">Büyük ve küçük harf zorunlu</mat-checkbox>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <mat-checkbox formControlName="numberRequired">Rakam zorunlu</mat-checkbox>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <mat-checkbox formControlName="specialCharacterRequired">Özel karakter zorunlu</mat-checkbox>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-sm btn-primary"
+                    [disabled]="securitySettingsForm.invalid || (isLoading$ | async)" (click)="saveSecuritySettings()">
+                    <ng-container *ngIf="!(isLoading$ | async)">Kaydet</ng-container>
+                    <ng-container *ngIf="isLoading$ | async">
+                        <span class="indicator-progress" [style.display]="'block'">
+                            Lütfen bekleyiniz...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </ng-container>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

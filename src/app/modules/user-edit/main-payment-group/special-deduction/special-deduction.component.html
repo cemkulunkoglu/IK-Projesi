@@ -1,0 +1,87 @@
+<div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+  <div class="card-body p-2">
+    <dx-data-grid id="gridContainer" [dataSource]="dataSource" [columnAutoWidth]="true" [showRowLines]="false"
+      [showColumnLines]="false" [showBorders]="true" [rowAlternationEnabled]="true" (onRowClick)="onRowClick($event)">
+      <dxo-toolbar>
+        <dxi-item location="before" locateInMenu="auto">
+          <button (click)="showPaymentModal(specialDeductionCreate)" class="btn btn-sm main-btn align-self-center"
+            *ngIf="hasPermission('employee-expense-demand-create')">
+            Özel Kesinti Ekle
+          </button>
+        </dxi-item>
+        <dxi-item name="searchPanel"></dxi-item>
+      </dxo-toolbar>
+      <dxo-paging [pageSize]="25"></dxo-paging>
+      <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[25, 50, 100]"></dxo-pager>
+      <dxo-filter-panel [visible]="false"></dxo-filter-panel>
+      <dxo-filter-row [visible]="false"></dxo-filter-row>
+      <dxo-header-filter [visible]="false"></dxo-header-filter>
+      <dxo-search-panel [visible]="true" [highlightCaseSensitive]="true"></dxo-search-panel>
+      <dxo-group-panel [visible]="false"></dxo-group-panel>
+
+      <dxi-column dataField="amount" dataType="string" caption="Tutar"
+        [format]="{ type: 'fixedPoint', precision: 2 }"></dxi-column>
+      <dxi-column dataField="amountType" dataType="string" caption="Tutar Tipi"
+        cellTemplate="amountTypeTemplate"></dxi-column>
+      <dxi-column dataField="installment" dataType="string" caption="Taksit"
+        [format]="{ type: 'fixedPoint', precision: 2 }"></dxi-column>
+      <dxi-column dataField="paymentType" dataType="string" caption="Ödeme Tipi"
+        cellTemplate="specialDeductionTypeTemplate"></dxi-column>
+      <dxi-column dataField="status" dataType="string" caption="Durum" cellTemplate="statusTypeTemplate"></dxi-column>
+      <dxi-column dataField="isPaid" dataType="boolean" caption="Ödendi mi?" cellTemplate="isPaidTemplate"></dxi-column>
+      <dxi-column dataField="startDate" dataType="date" caption="Başlangıç Tarihi"
+        format='dd/MM/yyyy HH:mm'></dxi-column>
+      <dxi-column dataField="endDate" dataType="date" caption="Bitiş Tarihi" format='dd/MM/yyyy HH:mm'></dxi-column>
+      <dxi-column dataField="paidDate" dataType="date" caption="Ödeme Tarihi" format='dd/MM/yyyy HH:mm'></dxi-column>
+      <dxi-column type="buttons" [width]="110" [fixed]="true" caption="İşlemler"
+        cellTemplate="cellBtnTemplate"></dxi-column>
+      <dxo-master-detail [enabled]="detailRow !== null" template="detail"></dxo-master-detail>
+      <div *dxTemplate="let detail of 'detail'">
+        <div class="master-detail-caption">
+          <strong>Açıklama : </strong> {{ clickedRowDescription }}
+        </div>
+      </div>
+      <div *dxTemplate="let data of 'isPaidTemplate'">
+        <span class="badge" [ngClass]="data.value ? 'badge-success' : 'badge-danger'">{{ data.value ? 'Evet' : 'Hayır'
+          }}</span>
+      </div>
+      <div *dxTemplate="let data of 'specialDeductionTypeTemplate'">
+        <span>{{SpecialDeductionTypeLabelMapping[data.value]}}</span>
+      </div>
+      <div *dxTemplate="let data of 'amountTypeTemplate'">
+        <span>{{AmountTypeEnumLabelMapping[data.value]}}</span>
+      </div>
+      <div *dxTemplate="let data of 'statusTypeTemplate'">
+        <span>{{StatusTypeEnumLabelMapping[data.value]}}</span>
+      </div>
+      <div *dxTemplate="let item of 'cellBtnTemplate'">
+        <a (click)="editPaymentClick(item, specialDeductionEdit)"
+          class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1" title="Düzenle">
+          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen055.svg'"></span>
+        </a>
+        <a (click)="deletePaymentClick(item)" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm"
+          title="Sil">
+          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/arrows/arr011.svg'"></span>
+        </a>
+      </div>
+    </dx-data-grid>
+  </div>
+</div>
+
+<ng-template #specialDeductionCreate let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Özel Kesinti Ekleme</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+  <app-special-deduction-create [userId]="userId"
+    (specialDeductionCreate)="reloadDataSource($event)"></app-special-deduction-create>
+</ng-template>
+
+<ng-template #specialDeductionEdit let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Özel Kesinti Düzenleme</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+  <app-special-deduction-update [specialDeductionId]="specialDeductionId"
+    (specialDeductionEdit)="reloadDataSource($event)"></app-special-deduction-update>
+</ng-template>

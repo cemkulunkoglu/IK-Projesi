@@ -1,0 +1,30 @@
+<div class="card h-100">
+    <div class="card-header border-0" style="justify-content: space-between; display: flex; align-items: center;">
+        <div style="order: 1;"></div>
+        <div style="order: 2;">
+            <h3>Yaklaşan Etkinlikler</h3>
+        </div>
+        <div style="order: 3;"></div>
+    </div>
+    <div class="card-body py-2 px-4">
+        <ng-container *ngIf="hasUpcomingEvents; else noUpcomingEvents">
+            <ng-container *ngFor="let event of upcomingEvents; let last = last">
+                <div style="overflow: auto;">
+                    <span style="float: left; font-size: 12px;" class="event-title">{{ event.name }}</span>
+                    <span style="float: right; font-size: 12px;" class="event-duration">{{ getDuration(event) }}
+                        Gün</span>
+                    <span style="display: block; margin: 0 auto; text-align: center; font-size: 12px;"
+                        class="event-date">
+                        {{ formatDate(event.startDate) }}
+                    </span>
+                </div>
+                <div *ngIf="!last" class="separator separator-dashed my-3"></div>
+            </ng-container>
+        </ng-container>
+        <ng-template #noUpcomingEvents>
+            <div class="text-center text-gray-600 fs-3 y-4">
+                Yaklaşan etkinlik bulunmamaktadır
+            </div>
+        </ng-template>
+    </div>
+</div>

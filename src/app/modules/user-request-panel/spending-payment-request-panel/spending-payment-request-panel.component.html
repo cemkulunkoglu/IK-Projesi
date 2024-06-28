@@ -1,0 +1,73 @@
+<div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+  <div class="card-body p-2">
+    <dx-data-grid id="gridContainer" [dataSource]="dataSource" [columnAutoWidth]="true" [showRowLines]="false"
+      [showColumnLines]="false" [showBorders]="true" [rowAlternationEnabled]="true">
+      <dxo-toolbar>
+        <dxi-item location="before" locateInMenu="auto">
+          <h3 class="fw-bolder m-0">Harcama Talepleri</h3>
+        </dxi-item>
+        <dxi-item name="searchPanel"></dxi-item>
+      </dxo-toolbar>
+      <dxo-paging [pageSize]="25"></dxo-paging>
+      <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[25, 50, 100]"></dxo-pager>
+      <dxo-filter-panel [visible]="false"></dxo-filter-panel>
+      <dxo-filter-row [visible]="false"></dxo-filter-row>
+      <dxo-header-filter [visible]="false"></dxo-header-filter>
+      <dxo-search-panel [visible]="true" [highlightCaseSensitive]="true"></dxo-search-panel>
+      <dxo-group-panel [visible]="false"></dxo-group-panel>
+
+      <dxi-column dataField="combinedColumn" caption="Ad" [allowFiltering]="false" [allowSorting]="false"
+      cellTemplate="combinedCellTemplate"></dxi-column>
+      <dxi-column dataField="amountType" dataType="string" caption="Tutar Tipi" cellTemplate="salaryTypeTemplate"></dxi-column>
+      <dxi-column dataField="description" dataType="string" caption="Açıklama"></dxi-column>
+      <dxi-column dataField="isPaid" dataType="boolean" caption="Ödendi mi?" cellTemplate="isPaidTemplate"></dxi-column>
+
+      <dxi-column type="buttons" [width]="110" [fixed]="true" caption="İşlemler"
+        cellTemplate="cellBtnTemplate"></dxi-column>
+
+        <div *dxTemplate="let data of 'combinedCellTemplate'">
+          <div style="display: flex; align-items: center; ">
+            <img [src]="data.data.profilPicture == null ? './assets/media/avatars/blank.png' : data.data.profilPicture"
+              style="width:50px; height: 50px; border-radius: 8px; margin-right: 10px;" />
+            <div>
+              <a href="/user-edit/{{data.data.userId}}">
+              <span style="margin-bottom: 0.25rem!important; color: #333 !important;"><b>{{ data.data.userNameSurname }} </b></span><br>
+            </a>
+            </div>
+          </div>
+        </div>
+
+        <div *dxTemplate="let data of 'isPaidTemplate'">
+          <span>{{ data.value ? 'Evet' : 'Hayır' }}</span>
+        </div>
+        <div *dxTemplate="let data of 'salaryTypeTemplate'">
+          <span>{{SalaryTypeLabelMapping[data.value]}}</span>
+        </div>
+        <div *dxTemplate="let data of 'paymentTypeTemplate'">
+          <span>{{PaymentTypeLabelMapping[data.value]}}</span>
+        </div>
+      <div *dxTemplate="let item of 'cellBtnTemplate'">
+        <a (click)="editPaymentClick(item, userPaymentEdit)"
+          class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1" title="Düzenle">
+          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen055.svg'"></span>
+        </a>
+        <a (click)="deletePaymentClick(item)" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" title="Sil">
+          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/arrows/arr011.svg'"></span>
+        </a>
+        <a (click)="openNewPage(item)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm" title="Dökümanı Aç">
+          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen004.svg'"></span>
+        </a>
+      </div>
+    </dx-data-grid>
+  </div>
+</div>
+
+
+
+<ng-template #userPaymentEdit let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Ödeme Düzenleme</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+  <app-update-spending-payment-request-panel [paymentId]="paymentId" (userPaymentEdit)="reloadDataSource($event)"></app-update-spending-payment-request-panel>
+</ng-template>

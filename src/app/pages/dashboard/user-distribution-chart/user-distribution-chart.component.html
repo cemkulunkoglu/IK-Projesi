@@ -1,0 +1,15 @@
+<div class="card h-100">
+  <div class="card-header border-0" style="justify-content: space-between; display: flex; align-items: center;">
+    <div style="order: 1;"></div>
+    <div style="order: 2;">
+      <h3>Çalışan Dağılımı</h3>
+    </div>
+    <a id="reloadWorkersChartButton" (click)="leaveReload()" style="order: 3;cursor: grab;">
+      <i class="fa-solid fa-arrows-rotate"></i>
+    </a>
+  </div>
+  <div class="card-body">
+    <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [labels]="chartOptions.labels"
+      [responsive]="chartOptions.responsive"></apx-chart>
+  </div>
+</div>

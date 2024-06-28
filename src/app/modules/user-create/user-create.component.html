@@ -1,0 +1,114 @@
+<div class="card mb-5 mb-xl-12" id="kt_profile_details_view">
+  <div class="card-header cursor-pointer">
+    <div class="card-title m-0">
+      <h3 class="fw-bolder m-0">Yeni Çalışan Ekle</h3>
+    </div>
+  </div>
+  <form novalidate="novalidate" [formGroup]="createUserForm" class="form col-lg-12 mx-auto">
+    <div class="card-body p-9">
+      <div class="row">
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Ad</mat-label>
+            <input type="text" matInput name="name" formControlName="name">
+            <mat-error *ngIf="createUserForm.controls['name'].hasError('required')">
+              Ad <strong>Zorunludur</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Soyad</mat-label>
+            <input type="text" matInput name="surname" formControlName="surname">
+            <mat-error *ngIf="createUserForm.controls['surname'].hasError('required')">
+              Soyad <strong>Zorunludur</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>E Mail (İş)</mat-label>
+            <input type="text" matInput name="emailBusiness" formControlName="emailBusiness">
+            <mat-error *ngIf="createUserForm.controls['emailBusiness'].hasError('required')">
+              E Mail (İş) <strong>Zorunludur</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>E Mail (Kişisel)</mat-label>
+            <input type="text" matInput name="emailPersonal" formControlName="emailPersonal">
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Telefon (İş)</mat-label>
+            <input type="text" matInput name="phoneBusiness" formControlName="phoneBusiness" maxlength="11"
+              (input)="onInputNumberOnly($event)">
+            <mat-error *ngIf="createUserForm.controls['phoneBusiness'].hasError('required')">
+              Telefon (İş)<strong>Zorunludur</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Telefon (Kişisel)</mat-label>
+            <input type="text" matInput name="phonePersonal" formControlName="phonePersonal" maxlength="11"
+              (input)="onInputNumberOnly($event)">
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>İşe Başlama Tarihi</mat-label>
+            <input matInput formControlName="startDate" [matDatepicker]="picker">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Erişim Türü</mat-label>
+            <mat-select formControlName="accessType">
+              <mat-option *ngFor="let item of accessTypeSources" [value]="item">
+                {{accessTypeLabelMapping[item]}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="createUserForm.get('accessType')">Erişi Tipi</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Sözleşme Türü</mat-label>
+            <mat-select formControlName="contractType" (change)="onContractTypeChange()">
+              <mat-option *ngFor="let item of contractTypeSources" [value]="item">
+                {{contractTypeLabelMapping[item]}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="createUserForm.get('contractType')">Erişi Tipi</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6 fv-row">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Sözleşme Bitiş Tarihi</mat-label>
+            <input matInput formControlName="contractEndDate" [matDatepicker]="picker2"
+              [disabled]="isContractEndDateDisabled()">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end py-6 px-9">
+      <button type="button" class="btn btn-sm btn-success" [disabled]="createUserForm.invalid || (isLoading$ | async)"
+        (click)="saveSettings()">
+        <ng-container *ngIf="!(isLoading$ | async)">Kaydet</ng-container>
+        <ng-container *ngIf="isLoading$ | async">
+          <span class="indicator-progress" [style.display]="'block'">
+            Lütfen bekleyiniz...
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+          </span>
+        </ng-container>
+      </button>
+    </div>
+  </form>
+</div>
