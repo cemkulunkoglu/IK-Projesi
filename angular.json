@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "CesarIKUI": {
+    "IKUI": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/CesarIKUI",
+            "outputPath": "dist/IKUI",
             "allowedCommonJsDependencies": [
               "object-path",
               "apexcharts",
@@ -32,10 +32,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "node_modules/devextreme/dist/css/dx.light.css",
               "src/styles.scss"
@@ -79,10 +76,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "CesarIKUI:build:production"
+              "browserTarget": "IKUI:build:production"
             },
             "development": {
-              "browserTarget": "CesarIKUI:build:development"
+              "browserTarget": "IKUI:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -90,7 +87,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "CesarIKUI:build"
+            "browserTarget": "IKUI:build"
           }
         },
         "test": {
@@ -101,10 +98,7 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "node_modules/devextreme/dist/css/dx.light.css",
               "src/styles.scss"
@@ -115,16 +109,13 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }
     }
   },
-  "defaultProject": "CesarIKUI",
+  "defaultProject": "IKUI",
   "cli": {
     "defaultCollection": "@angular-eslint/schematics",
     "analytics": "d3bb91fa-38ca-43fd-8e86-dd54f5649b6d"

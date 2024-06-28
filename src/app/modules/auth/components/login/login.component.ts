@@ -14,7 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class LoginComponent implements OnInit, OnDestroy {
   defaultAuth: any = {
-    email: 'string@cesargroup.com.tr',
+    email: 'string@group.com.tr',
     password: 'string',
   };
   loginForm: FormGroup;
